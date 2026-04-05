@@ -90,7 +90,7 @@
                 $statusVal = $order->status->value;
                 $elapsed = $order->created_at->diffForHumans();
             @endphp
-            <div class="glass rounded-2xl border-l-4 {{ $statusColors[$statusVal] ?? 'border-slate-500' }} overflow-hidden transition-all">
+            <div class="glass bg-white/95 rounded-2xl border-l-4 {{ $statusColors[$statusVal] ?? 'border-slate-500' }} overflow-hidden transition-all shadow-md shadow-slate-200/50">
                 <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
                     {{-- Left: Order Info --}}
@@ -112,32 +112,32 @@
 
                         <div class="min-w-0">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-white/95 font-[Outfit]">{{ $order->order_number }}</span>
-                                <span class="text-xs px-2 py-0.5 rounded-lg font-semibold {{ $badgeColors[$statusVal] ?? '' }}">
+                                <span class="font-bold text-slate-900 font-[Outfit]">{{ $order->order_number }}</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-lg font-bold {{ $badgeColors[$statusVal] ?? '' }}">
                                     {{ $order->status->label() }}
                                 </span>
                                 @if($order->urgency?->value === 'urgent')
-                                    <span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 font-bold animate-pulse">⚡ URGENT</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-100 text-red-600 font-bold animate-pulse border border-red-200">⚡ URGENT</span>
                                 @endif
                             </div>
 
                             {{-- Service Name --}}
                             @if($order->items->count())
-                                <div class="text-sm text-violet-500 font-medium mt-0.5">
+                                <div class="text-sm text-violet-700 font-bold mt-1">
                                     🔧 {{ app()->getLocale() === 'ar'
                                         ? ($order->items->first()->serviceOption?->name_ar ?? '—')
                                         : ($order->items->first()->serviceOption?->name_en ?? '—') }}
                                     @if($order->items->count() > 1)
-                                        <span class="text-white/60 text-xs">+{{ $order->items->count() - 1 }} more</span>
+                                        <span class="text-slate-400 text-[10px] font-medium">+{{ $order->items->count() - 1 }} more</span>
                                     @endif
                                 </div>
                             @endif
 
-                            <div class="flex items-center gap-3 mt-1 flex-wrap text-xs text-white/70">
-                                <span>👤 {{ $order->client?->name ?? 'Guest' }}</span>
-                                <span>📞 {{ $order->client?->phone ?? '—' }}</span>
-                                <span>📍 {{ Str::limit($order->address, 35) }}</span>
-                                <span>🕐 {{ $elapsed }}</span>
+                            <div class="flex items-center gap-3 mt-2 flex-wrap text-[11px] font-semibold text-slate-500">
+                                <span class="flex items-center gap-1">👤 <span class="text-slate-700">{{ $order->client?->name ?? 'Guest' }}</span></span>
+                                <span class="flex items-center gap-1">📞 <span class="text-slate-700">{{ $order->client?->phone ?? '—' }}</span></span>
+                                <span class="flex items-center gap-1">📍 <span class="text-slate-700">{{ Str::limit($order->address, 35) }}</span></span>
+                                <span class="flex items-center gap-1">🕐 <span class="text-slate-700">{{ $elapsed }}</span></span>
                             </div>
                         </div>
                     </div>
@@ -214,6 +214,10 @@
                 @endif
             </div>
             @endforeach
+        </div>
+
+        <div class="pt-2">
+            {{ $orders->links() }}
         </div>
         @endif
 

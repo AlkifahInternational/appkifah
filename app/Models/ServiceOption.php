@@ -14,6 +14,8 @@ class ServiceOption extends Model
         'sub_service_id',
         'name_en',
         'name_ar',
+        'description_en',
+        'description_ar',
         'unit_label_en',
         'unit_label_ar',
         'base_price',

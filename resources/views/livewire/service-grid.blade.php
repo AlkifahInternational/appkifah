@@ -6,13 +6,13 @@
                 @if($activeServiceId)
                     <button wire:click="goBack"
                         class="w-10 h-10 rounded-xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95">
-                        <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-slate-600 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </button>
                 @else
                     <a href="{{ route('home') }}">
-                        <img src="/images/logo.png" alt="Al-Kifah"
+                            <img src="{{ asset('images/logo.png') }}?v={{ @filemtime(public_path('images/logo.png')) ?: time() }}" alt="Al-Kifah"
                              class="w-12 h-12 rounded-xl object-cover shrink-0 shadow-md shadow-violet-900/40">
                     </a>
                 @endif
@@ -99,25 +99,31 @@
                         </button>
                         
                         {{-- Notifications Dropdown --}}
-                        <div x-show="open" @click.away="open = false" class="absolute {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-2 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="display: none;">
-                            <div class="p-3 border-b border-slate-100 bg-white/5 flex items-center justify-between">
-                                <span class="font-bold text-white/95">{{ app()->getLocale() === 'ar' ? 'الإشعارات' : 'Notifications' }}</span>
+                        <div x-show="open" @click.away="open = false" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             class="fixed inset-x-4 sm:absolute sm:inset-auto sm:right-0 mt-2 sm:w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden" 
+                             style="display: none;">
+                            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <span class="font-bold text-slate-900">{{ app()->getLocale() === 'ar' ? 'الإشعارات' : 'Notifications' }}</span>
                                 @if($unreadCount > 0)
-                                    <span class="text-xs font-semibold bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full">{{ $unreadCount }}</span>
+                                    <span class="text-xs font-bold bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full">{{ $unreadCount }}</span>
                                 @endif
                             </div>
-                            <div class="max-h-64 overflow-y-auto p-2">
-                                @forelse(auth()->user()->notifications()->take(5)->get() as $notification)
-                                    <div class="p-3 {{ $notification->read_at ? 'opacity-60' : 'bg-orange-50/50' }} rounded-lg mb-1 flex gap-3 text-sm">
+                            <div class="max-h-80 overflow-y-auto p-2">
+                                @forelse(auth()->user()->notifications()->take(10)->get() as $notification)
+                                    <div class="p-3 {{ $notification->read_at ? 'opacity-50' : 'bg-orange-50' }} rounded-xl mb-1 flex gap-3 text-sm transition-all hover:bg-slate-50">
                                         <div class="w-2 h-2 mt-1.5 rounded-full {{ $notification->read_at ? 'bg-slate-300' : 'bg-orange-500' }} shrink-0"></div>
                                         <div>
-                                            <p class="text-white/95 font-medium">{{ $notification->data['message'] ?? 'Notification' }}</p>
-                                            <p class="text-xs text-white/70 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                            <p class="text-slate-900 font-bold leading-snug">{{ $notification->data['message'] ?? 'Notification' }}</p>
+                                            <p class="text-[10px] text-slate-500 mt-1.5 font-semibold">{{ $notification->created_at->diffForHumans() }}</p>
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="p-4 text-center text-white/70 text-sm">
-                                        {{ app()->getLocale() === 'ar' ? 'لا توجد إشعارات جديدة' : 'No new notifications' }}
+                                    <div class="py-12 text-center text-slate-400">
+                                        <div class="text-4xl mb-2 opacity-30">🔔</div>
+                                        <p class="text-sm font-medium">{{ app()->getLocale() === 'ar' ? 'لا توجد إشعارات جديدة' : 'No new notifications' }}</p>
                                     </div>
                                 @endforelse
                                 @if(auth()->user()->notifications()->count() > 5)
@@ -241,6 +247,36 @@
                 </button>
             </div>
 
+            {{-- ── Smart Visual Diagnosis CTA Banner ─────────────────────── --}}
+            <div class="mb-8 relative overflow-hidden rounded-[2rem] bg-linear-to-r from-[#1e0b35] to-[#120720] border border-white/10 shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center group cursor-pointer" onclick="Livewire.dispatch('openAiModal')">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-600/20 blur-[50px] rounded-full pointer-events-none"></div>
+
+                {{-- Chatbot Avatar --}}
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-linear-to-br from-orange-500 to-violet-600 p-[2px] mb-4 shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-transform duration-300">
+                    <div class="w-full h-full rounded-full bg-[#120720] flex items-center justify-center">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-xl sm:text-2xl font-bold font-[Outfit] text-white mb-2">
+                    {{ app()->getLocale() === 'ar' ? 'تشخيص ذكي بالمجان' : 'Smart Free Diagnosis' }}
+                </h3>
+                <p class="text-sm sm:text-base text-white/70 mb-5 max-w-lg">
+                    {{ app()->getLocale() === 'ar' ? 'لست متأكداً من المشكلة؟ التقط صورة أو ارفع صورتها، ودع الذكاء الاصطناعي يحللها لك ويقترح الخدمة المناسبة فوراً.' : 'Not sure what the problem is? Take a picture, and let our AI analyze it to suggest the right service instantly.' }}
+                </p>
+
+                <button class="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/20 transition-all group-hover:bg-linear-to-r group-hover:from-orange-500 group-hover:to-violet-600 group-hover:border-transparent">
+                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                        <circle cx="12" cy="13" r="4" stroke-width="2"/>
+                    </svg>
+                    {{ app()->getLocale() === 'ar' ? 'صور مشكلتك الآن' : 'Picture Your Problem Now' }}
+                </button>
+            </div>
+
             <div id="services-grid" class="mb-8 scroll-mt-24">
                 <h2 class="text-2xl sm:text-3xl font-bold font-[Outfit] mb-2">{{ __('Our Services') }}</h2>
                 <p class="text-white/70">{{ __('Choose a service category to get started') }}</p>
@@ -316,345 +352,480 @@
             </div>
         @endif
 
-        {{-- ── Level 2: Sub-Services Grid ────────────────── --}}
-        @if($activeServiceId && !$activeSubServiceId)
-            <div class="slide-enter">
-                <div class="mb-6">
-                    <p class="text-white/70 text-sm">{{ __('Select a service type') }}</p>
-                </div>
+        {{-- ── Level 2A: Direct Product Grid (Camera, Software, etc.) ────────────── --}}
+        @if($directMode && $activeServiceId && !$activeSubServiceId)
+            <div x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="slide-enter scroll-mt-24" id="items-grid">
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    @foreach($subServices as $index => $sub)
-                        @php
-                            $bgColors = [
-                                'snowflake' => 'from-blue-500 to-blue-600',
-                                'droplet' => 'from-cyan-500 to-cyan-600',
-                                'zap' => 'from-yellow-400 to-orange-500',
-                                'paintbrush' => 'from-orange-500 to-red-500',
-                                'camera' => 'from-red-500 to-rose-600',
-                                'bell' => 'from-purple-500 to-fuchsia-600',
-                                'hammer' => 'from-violet-500 to-purple-600',
-                                'paint-roller' => 'from-green-500 to-emerald-600',
-                                'globe' => 'from-indigo-500 to-blue-600',
-                                'smartphone' => 'from-pink-500 to-rose-500'
-                            ];
-                            $cardBg = $bgColors[$sub->icon] ?? 'from-slate-500 to-slate-600';
-                        @endphp
-                        <button wire:click="selectSubService({{ $sub->id }})"
-                            class="service-card text-center group bg-gradient-to-br {{ $cardBg }} border-0 border-white/10"
-                            style="animation-delay: {{ $index * 80 }}ms"
-                            wire:key="sub-{{ $sub->id }}">
-
-                            {{-- Icon --}}
-                            <div class="w-12 h-12 mx-auto rounded-xl bg-white/20 flex items-center justify-center mb-3 transition-colors shadow-inner">
-                                @switch($sub->icon)
-                                    @case('snowflake')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
-                                        @break
-                                    @case('droplet')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C12 2 5 10 5 14a7 7 0 1014 0c0-4-7-12-7-12z"/></svg>
-                                        @break
-                                    @case('zap')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                                        @break
-                                    @case('paintbrush')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-5 5M4 20l3.5-3.5M15 4l5 5-11 11H4v-5L15 4z"/></svg>
-                                        @break
-                                    @case('camera')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4" stroke-width="1.5"/></svg>
-                                        @break
-                                    @case('bell')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-                                        @break
-                                    @case('hammer')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                        @break
-                                    @case('paint-roller')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM12 11v4M10 19h4a1 1 0 001-1v-3H9v3a1 1 0 001 1z"/></svg>
-                                        @break
-                                    @case('globe')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-                                        @break
-                                    @case('smartphone')
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M12 18h.01"/></svg>
-                                        @break
-                                    @default
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                @endswitch
-                            </div>
-
-                            <div class="inline-block px-3 py-1 rounded-full bg-white/20 border border-white/30 shadow-sm mb-1 text-white">
-                                <h3 class="text-sm sm:text-base font-bold font-[Outfit]">
-                                    {{ app()->getLocale() === 'ar' ? $sub->name_ar : $sub->name_en }}
-                                </h3>
-                            </div>
-
-                            <div class="mt-2 flex items-center justify-center text-xs text-white/80 group-hover:text-white transition-colors">
-                                <span>{{ $sub->serviceOptions()->count() }} {{ __('options') }}</span>
-                                <svg class="w-3 h-3 ml-1 rtl:mr-1 rtl:ml-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                            </div>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-        {{-- ── Level 3: Service Options List ────────────────── --}}
-        @if($activeSubServiceId)
-            <div class="slide-enter">
-                {{-- Service description banner --}}
-                @if($activeService && ($activeService->description_en || $activeService->description_ar))
-                <div class="mb-4 p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-slate-50 border border-violet-100">
-                    <div class="flex gap-3">
-                        <div class="text-xl shrink-0">{{ $activeService->icon }}</div>
-                        <p class="text-sm text-white/80 leading-relaxed">
-                            {{ app()->getLocale() === 'ar' ? $activeService->description_ar : $activeService->description_en }}
+                {{-- Header --}}
+                <div class="mb-4">
+                    @if(count($cart) > 0)
+                        <p class="text-sm font-semibold text-violet-200">
+                            ✓ {{ count($cart) }} {{ app()->getLocale() === 'ar' ? 'منتج مختار' : 'selected' }}
+                            · {{ number_format($calculatedPrice, 0) }} SAR
                         </p>
-                    </div>
-
-                    {{-- Construction-specific pricing note --}}
-                    @if($activeService->slug === 'construction-contracting')
-                    <div class="mt-3 pt-3 border-t border-violet-100">
-                        <p class="text-xs font-semibold text-violet-700 mb-2 flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            {{ app()->getLocale() === 'ar' ? 'كيف يُحسب السعر؟' : 'How is the price calculated?' }}
-                        </p>
-                        <ul class="space-y-1 text-xs text-white/70">
-                            @foreach([
-                                ['ar' => '📐 المخطط المعماري — نوع وتعقيد التصميم', 'en' => '📐 Architectural plan — type & complexity'],
-                                ['ar' => '📏 المساحة الإجمالية — بالمتر المربع (م²)', 'en' => '📏 Total surface area — in square meters (m²)'],
-                                ['ar' => '🧱 المكوّنات — أعمال التشطيب، والمواد، والمرافق', 'en' => '🧱 Components — finishing works, materials & utilities'],
-                                ['ar' => '📋 السعر النهائي يُحدَّد بعد مراجعة المشروع', 'en' => '📋 Final price confirmed after project review'],
-                            ] as $point)
-                            <li>{{ app()->getLocale() === 'ar' ? $point['ar'] : $point['en'] }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                    @else
+                        <p class="text-white/60 text-sm">{{ app()->getLocale() === 'ar' ? 'اختر المنتجات والخدمات — يمكنك اختيار أكثر من عنصر' : 'Select products & services — pick as many as you need' }}</p>
                     @endif
                 </div>
-                @endif
 
-                <div class="mb-4">
-                    <p class="text-white/70 text-sm">{{ __('Choose your service and set options') }}</p>
-                </div>
+                {{-- Product groups with Dark Violet Wrapper --}}
+                <div class="bg-violet-950/60 p-4 sm:p-6 rounded-[2rem] border border-violet-500/20 shadow-inner mb-6">
+                @foreach($directGroupedOptions as $group)
+                    @php
+                        $sub = $group['sub'];
+                        $isTwoColumn = ($group['layout'] ?? 'one-column') === 'two-column';
+                        $catMeta = [
+                            'camera-packages'        => ['icon'=>'📦','accent'=>'from-violet-500 to-violet-700','border'=>'border-violet-500/50','bg'=>'bg-violet-500/10','text'=>'text-violet-300','badge'=>'bg-violet-500/20 text-violet-200','price'=>'text-violet-300'],
+                            'store-installation'     => ['icon'=>'🔧','accent'=>'from-orange-500 to-orange-700','border'=>'border-orange-500/50','bg'=>'bg-orange-500/10','text'=>'text-orange-300','badge'=>'bg-orange-500/20 text-orange-200','price'=>'text-orange-300'],
+                            'store-attendance-locks' => ['icon'=>'🔐','accent'=>'from-blue-500 to-blue-700',  'border'=>'border-blue-500/50',  'bg'=>'bg-blue-500/10',  'text'=>'text-blue-300',  'badge'=>'bg-blue-500/20 text-blue-200',  'price'=>'text-blue-300'],
+                            'store-dashcams'         => ['icon'=>'🚗','accent'=>'from-teal-500 to-teal-700',  'border'=>'border-teal-500/50',  'bg'=>'bg-teal-500/10',  'text'=>'text-teal-300',  'badge'=>'bg-teal-500/20 text-teal-200',  'price'=>'text-teal-300'],
+                            'cctv-cameras'           => ['icon'=>'📷','accent'=>'from-rose-500 to-rose-700',  'border'=>'border-rose-500/50',  'bg'=>'bg-rose-500/10',  'text'=>'text-rose-300',  'badge'=>'bg-rose-500/20 text-rose-200',  'price'=>'text-rose-300'],
+                            'cctv-recorders'         => ['icon'=>'💾','accent'=>'from-slate-500 to-slate-600','border'=>'border-slate-500/50','bg'=>'bg-slate-500/10','text'=>'text-slate-300','badge'=>'bg-slate-500/20 text-slate-200','price'=>'text-slate-300'],
+                            'cctv-accessories'       => ['icon'=>'🔌','accent'=>'from-green-500 to-green-700','border'=>'border-green-500/50','bg'=>'bg-green-500/10','text'=>'text-green-300','badge'=>'bg-green-500/20 text-green-200','price'=>'text-green-300'],
+                            'alarm-systems'          => ['icon'=>'🔔','accent'=>'from-red-500 to-red-700',    'border'=>'border-red-500/50',  'bg'=>'bg-red-500/10',  'text'=>'text-red-300',  'badge'=>'bg-red-500/20 text-red-200',    'price'=>'text-red-300'],
+                            'intercom-access'        => ['icon'=>'📟','accent'=>'from-indigo-500 to-indigo-700','border'=>'border-indigo-500/50','bg'=>'bg-indigo-500/10','text'=>'text-indigo-300','badge'=>'bg-indigo-500/20 text-indigo-200','price'=>'text-indigo-300'],
+                            'smart-home'             => ['icon'=>'🏠','accent'=>'from-amber-500 to-amber-700','border'=>'border-amber-500/50','bg'=>'bg-amber-500/10','text'=>'text-amber-300','badge'=>'bg-amber-500/20 text-amber-200','price'=>'text-amber-300'],
+                            
+                            // Software & Marketing Additions
+                            'web-development'        => ['icon'=>'🌐','accent'=>'from-blue-500 to-blue-700',  'border'=>'border-blue-500/50',  'bg'=>'bg-blue-500/10',  'text'=>'text-blue-300',  'badge'=>'bg-blue-500/20 text-blue-200',  'price'=>'text-blue-300'],
+                            'mobile-apps'            => ['icon'=>'📱','accent'=>'from-purple-500 to-purple-700',  'border'=>'border-purple-500/50',  'bg'=>'bg-purple-500/10',  'text'=>'text-purple-300',  'badge'=>'bg-purple-500/20 text-purple-200',  'price'=>'text-purple-300'],
+                            'pos-systems'            => ['icon'=>'💻','accent'=>'from-emerald-500 to-emerald-700',  'border'=>'border-emerald-500/50',  'bg'=>'bg-emerald-500/10',  'text'=>'text-emerald-300',  'badge'=>'bg-emerald-500/20 text-emerald-200',  'price'=>'text-emerald-300'],
+                            'digital-marketing'      => ['icon'=>'📢','accent'=>'from-pink-500 to-pink-700',  'border'=>'border-pink-500/50',  'bg'=>'bg-pink-500/10',  'text'=>'text-pink-300',  'badge'=>'bg-pink-500/20 text-pink-200',  'price'=>'text-pink-300'],
+                            'seo-analytics'          => ['icon'=>'📈','accent'=>'from-cyan-500 to-cyan-700',  'border'=>'border-cyan-500/50',  'bg'=>'bg-cyan-500/10',  'text'=>'text-cyan-300',  'badge'=>'bg-cyan-500/20 text-cyan-200',  'price'=>'text-cyan-300'],
+                        ];
+                        $meta    = $catMeta[$sub->slug] ?? $catMeta['cctv-cameras'];
+                        $catIcon = $meta['icon'];
+                    @endphp
 
-                <div class="space-y-3">
-                    @foreach($serviceOptions as $index => $option)
-                        <button wire:click="openModal({{ $option->id }})"
-                            class="w-full text-left p-4 sm:p-5 rounded-2xl bg-white/80 border border-slate-100/50 border border-slate-200 hover:bg-white/90 border border-slate-100 hover:border-violet-500/30 transition-all duration-300 group fade-in"
-                            style="animation-delay: {{ $index * 100 }}ms"
-                            wire:key="option-{{ $option->id }}">
-                            <div class="flex items-center justify-between">
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-sm sm:text-base group-hover:text-violet-700 transition-colors">
-                                        {{ app()->getLocale() === 'ar' ? $option->name_ar : $option->name_en }}
-                                    </h4>
-                                    <p class="text-xs text-white/70 mt-1">
-                                        {{ __('Per') }} {{ app()->getLocale() === 'ar' ? $option->unit_label_ar : $option->unit_label_en }}
-                                        · {{ $option->min_quantity }}-{{ $option->max_quantity }} {{ app()->getLocale() === 'ar' ? $option->unit_label_ar : $option->unit_label_en }}
-                                    </p>
-                                </div>
-                                <div class="text-right rtl:text-left">
-                                    <div class="text-lg sm:text-xl font-bold text-violet-600 font-[Outfit]">
-                                        {{ number_format($option->base_price, 0) }}
-                                        <span class="text-xs text-white/70 font-normal">{{ __('SAR') }}</span>
-                                    </div>
-                                    <div class="text-[10px] text-orange-400/80 mt-0.5">
-                                        {{ __('Urgent') }}: {{ number_format($option->base_price * $option->urgent_multiplier, 0) }} {{ __('SAR') }}
-                                    </div>
-                                </div>
+                        <div wire:key="group-{{ $sub->id }}">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-lg">{{ $catIcon }}</span>
+                                <h3 class="text-sm font-bold text-white">{{ app()->getLocale() === 'ar' ? $sub->name_ar : $sub->name_en }}</h3>
+                                <span class="text-[10px] {{ $meta['text'] }}">{{ $group['options']->count() }}</span>
                             </div>
-                        </button>
-                    @endforeach
+
+                            {{-- Product Cards (Two column grid for everything) --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                                @foreach($group['options'] as $option)
+                                    @php $inCart = isset($cart[$option->id]); @endphp
+                                    <div wire:key="cam-{{ $option->id }}" class="h-full">
+                                        <div wire:click="toggleOption({{ $option->id }})"
+                                            class="cursor-pointer h-full w-full flex flex-col text-{{ app()->getLocale() === 'ar' ? 'right' : 'left' }} rounded-xl border-l-4 {{ $meta['border'] }} p-3 border border-white/10 transition-all
+                                                {{ $inCart ? 'bg-white/10 border-white/20' : 'bg-white/5 hover:bg-white/8' }}">
+
+                                            <div class="flex items-center justify-between gap-2">
+                                                {{-- Name + desc --}}
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-bold text-sm text-white leading-tight">{{ app()->getLocale() === 'ar' ? $option->name_ar : $option->name_en }}</p>
+                                                    @php $desc = app()->getLocale() === 'ar' ? $option->description_ar : $option->description_en; @endphp
+                                                    @if($desc)
+                                                        <p class="text-xs text-violet-100/70 mt-0.5 line-clamp-1">{{ $desc }}</p>
+                                                    @endif
+                                                </div>
+
+                                                {{-- Price --}}
+                                                <div class="shrink-0 text-center ml-2">
+                                                    <span class="text-lg font-black font-[Outfit] {{ $inCart ? $meta['text'] : 'text-white' }}">{{ number_format($option->base_price, 0) }}</span>
+                                                    <span class="text-[9px] text-white/40 block">SAR</span>
+                                                </div>
+
+                                                {{-- Check icon --}}
+                                                @if($inCart)
+                                                    <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center shrink-0">
+                                                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            {{-- Qty controls --}}
+                                            @if($inCart)
+                                            <div class="mt-auto pt-2 border-t border-white/10 flex items-center justify-between w-full" wire:click.stop>
+                                                <span class="text-xs {{ $meta['text'] }} font-semibold">{{ app()->getLocale() === 'ar' ? 'الكمية' : 'Qty' }}</span>
+                                                <div class="flex items-center rounded-lg border border-white/20 overflow-hidden bg-black/20">
+                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, -1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
+                                                    <span class="w-8 text-center text-sm font-bold text-white">{{ $cart[$option->id]['quantity'] }}</span>
+                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, 1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                @endforeach
                 </div>
+
+                {{-- Floating Confirmation Bar --}}
+                @if(count($cart) > 0)
+                <div class="fixed bottom-6 inset-x-4 z-50 pointer-events-none">
+                    <div class="max-w-2xl mx-auto rounded-3xl p-4 shadow-2xl border border-white/20 flex items-center justify-between gap-4 pointer-events-auto bg-violet-950/90 backdrop-blur-lg">
+                        <div class="px-2">
+                            <div class="text-[10px] text-white/60 uppercase tracking-widest font-bold">
+                                {{ app()->getLocale() === 'ar' ? 'إجمالي القيمة التقديرية' : 'Total Estimate' }}
+                            </div>
+                            <div class="text-2xl font-black text-white px-1">
+                                {{ number_format($calculatedPrice, 0) }}
+                                <span class="text-xs font-normal">SAR</span>
+                            </div>
+                        </div>
+                        <button wire:click="openModal" class="bg-gradient-to-r from-orange-500 to-violet-500 text-white px-8 py-4 rounded-2xl font-bold text-sm tracking-wide hover:shadow-orange-500/40 transition-all shadow-xl active:scale-95">
+                            {{ __('Confirm Selections') }}
+                        </button>
+                    </div>
+                </div>
+                @endif
             </div>
         @endif
+
+
+
     </main>
 
-    {{-- ── Action Modal (Level 3) ────────────────────────── --}}
-    @if($showModal && $selectedOption)
+    {{-- ── Action Modal (Level 3 / Checkout) ────────────────────────── --}}
+    @if($showModal && (isset($selectedOption) || count($cart) > 0))
+        <template x-teleport="body">
         <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay" wire:click.self="closeModal">
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
-            <div class="relative w-full sm:max-w-lg mx-auto bg-white rounded-t-3xl sm:rounded-3xl border border-slate-200 modal-content max-h-[90dvh] overflow-y-auto">
+            <div class="relative w-full sm:max-w-lg mx-auto bg-[#120720] rounded-t-[2.5rem] sm:rounded-[2.5rem] border border-violet-500/20 modal-content max-h-[90dvh] overflow-y-auto shadow-2xl shadow-violet-900/50 overflow-x-hidden">
+                <div class="absolute inset-0 bg-linear-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
+                
                 {{-- Modal Handle --}}
-                <div class="flex justify-center pt-3 sm:hidden">
-                    <div class="w-10 h-1 bg-orange-50 rounded-full"></div>
+                <div class="flex justify-center pt-4 sm:hidden">
+                    <div class="w-12 h-1.5 bg-white/5 rounded-full"></div>
                 </div>
 
                 {{-- Modal Header --}}
-                <div class="px-6 pt-5 pb-4 border-b border-slate-200">
+                <div class="px-6 pt-6 pb-5 border-b border-white/10 relative z-10">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-lg font-bold font-[Outfit]">
-                                {{ app()->getLocale() === 'ar' ? $selectedOption->name_ar : $selectedOption->name_en }}
+                            <h3 class="text-xl font-bold font-[Outfit] text-white tracking-tight">
+                                @if(isset($selectedOption) && count($cart) <= 1)
+                                    {{ app()->getLocale() === 'ar' ? $selectedOption->name_ar : $selectedOption->name_en }}
+                                @else
+                                    {{ app()->getLocale() === 'ar' ? 'ملخص الخدمات المطلوبة' : 'Booking Summary' }}
+                                @endif
                             </h3>
-                            <p class="text-xs text-white/70 mt-0.5">
-                                {{ app()->getLocale() === 'ar' ? $selectedOption->subService->name_ar : $selectedOption->subService->name_en }}
+                            <p class="text-xs text-white/50 mt-1 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+                                @if(isset($selectedOption) && count($cart) <= 1)
+                                    {{ app()->getLocale() === 'ar' ? $selectedOption->subService->name_ar : $selectedOption->subService->name_en }}
+                                @else
+                                    {{ app()->getLocale() === 'ar' ? 'مراجعة الطلب قبل التأكيد' : 'Review your order before confirm' }}
+                                @endif
                             </p>
                         </div>
-                        <button wire:click="closeModal" class="w-8 h-8 rounded-lg bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        <button wire:click="closeModal" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 flex items-center justify-center transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
                     </div>
                     {{-- Construction services: pricing explanation banner --}}
                     @if($activeService && $activeService->slug === 'construction-contracting')
-                    <div class="mt-3 p-3 rounded-xl bg-orange-50 border border-orange-100">
-                        <p class="text-xs text-orange-700 font-semibold mb-1">
-                            {{ app()->getLocale() === 'ar' ? '⚠️ ملاحظة: هذا سعر تقديري' : '⚠️ Note: Estimated base price' }}
+                    <div class="mt-4 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20">
+                        <p class="text-xs text-orange-300 font-bold mb-1.5 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                            {{ app()->getLocale() === 'ar' ? 'ملاحظة هامة' : 'Important Note' }}
                         </p>
-                        <p class="text-xs text-orange-600 leading-relaxed">
+                        <p class="text-xs text-white/60 leading-relaxed">
                             {{ app()->getLocale() === 'ar'
-                                ? 'السعر المعروض هو تقدير أولي. يُحدَّد السعر النهائي بناءً على المخطط المعماري، المساحة الإجمالية (م²)، وطبيعة المكوّنات والتشطيبات. سيتواصل معك أحد مهندسينا لمراجعة تفاصيل مشروعك.'
-                                : 'The displayed price is an initial estimate. The final cost is determined based on the architectural plan, total surface area (m²), and the nature of components & finishes. One of our engineers will contact you to review your project details.'
+                                ? 'السعر المعروض هو تقدير أولي. يُحدَّد السعر النهائي بناءً على المخطط المعماري والمساحة. سيتواصل معك أحد مهندسينا لمراجعة تفاصيل مشروعك.'
+                                : 'Final cost is determined by architectural plans. One of our engineers will contact you to review your project detail.'
                             }}
                         </p>
                     </div>
                     @endif
                 </div>
 
-                <div class="px-5 sm:px-6 py-4 space-y-5">
-                    {{-- Unit Counter --}}
-                    <div>
-                        <label class="text-sm font-medium text-white/80 block mb-3">
-                            {{ __('How many') }} {{ app()->getLocale() === 'ar' ? $selectedOption->unit_label_ar : $selectedOption->unit_label_en }}?
+                <div class="relative z-10 px-5 sm:px-6 py-6 space-y-7">
+                    @if($prefillFromAi && $aiProblemDescription)
+                        {{-- AI Section (Collapsed for multi-item if needed) --}}
+                        <div class="p-4 rounded-2xl bg-violet-500/5 border border-violet-500/10">
+                            <label class="text-[10px] font-black text-violet-300 uppercase tracking-widest block mb-2">
+                                {{ app()->getLocale() === 'ar' ? 'تشخيص الذكاء الاصطناعي' : 'AI Diagnosis' }}
+                            </label>
+                            <p class="text-xs text-white/70 leading-relaxed italic line-clamp-3">
+                                "{{ $aiProblemDescription }}"
+                            </p>
+                        </div>
+                    @endif
+
+                    {{-- Order Summary List --}}
+                    <div class="space-y-4">
+                        <label class="text-sm font-bold text-white/90 block tracking-tight">
+                            {{ app()->getLocale() === 'ar' ? 'مراجعة الخدمات المختارة' : 'Review Selected Services' }}
                         </label>
-                        <div class="flex items-center justify-center gap-6">
-                            <button wire:click="decrementQuantity"
-                                class="w-14 h-14 rounded-2xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center text-2xl font-bold transition-all hover:scale-105 active:scale-95 {{ $quantity <= $selectedOption->min_quantity ? 'opacity-30 cursor-not-allowed' : '' }}">
-                                −
-                            </button>
-                            <div class="text-4xl font-bold font-[Outfit] min-w-[4rem] text-center text-violet-600 counter-spin">
-                                {{ $quantity }}
-                            </div>
-                            <button wire:click="incrementQuantity"
-                                class="w-14 h-14 rounded-2xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center text-2xl font-bold transition-all hover:scale-105 active:scale-95 {{ $quantity >= $selectedOption->max_quantity ? 'opacity-30 cursor-not-allowed' : '' }}">
-                                +
-                            </button>
+                        <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            @foreach($cart as $id => $item)
+                                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                                    <div class="flex-1">
+                                        <h4 class="text-xs font-bold text-white/90">{{ app()->getLocale() === 'ar' ? $item['name_ar'] : $item['name_en'] }}</h4>
+                                        <p class="text-[10px] text-white/40 mt-0.5">{{ __('Quantity') }}: {{ $item['quantity'] }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-[10px] text-violet-400 font-bold font-[Outfit]">
+                                            @php 
+                                               $opt = \App\Models\ServiceOption::find($id);
+                                               $itemPrice = ($urgency === 'urgent' && $opt) ? $opt->base_price * $opt->urgent_multiplier : ($opt->base_price ?? 0);
+                                            @endphp
+                                            {{ number_format($itemPrice * $item['quantity'], 0) }} SAR
+                                        </div>
+                                        <button wire:click="toggleOption({{ $id }})" class="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-all">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                            
+                            @if(count($cart) === 0)
+                                <p class="text-center py-8 text-xs text-white/30 italic">
+                                    {{ app()->getLocale() === 'ar' ? 'سلة الخدمات فارغة' : 'Your cart is empty' }}
+                                </p>
+                            @endif
                         </div>
                     </div>
 
+                    {{-- Construction Visits (Only for Contracting) --}}
+                    @if($isConstruction)
+                    <div>
+                        <label class="text-sm font-bold text-white/90 block mb-2">{{ app()->getLocale() === 'ar' ? 'عدد التقييمات / الزيارات المطلوبة' : 'Number of evaluation visits required' }}</label>
+                        <p class="text-[10px] text-white/50 mb-3">{{ app()->getLocale() === 'ar' ? 'مشاريع المقاولات تتطلب زيارات هندسية للتقييم الدقيق.' : 'Contracting projects require engineering visits for accurate estimation.' }}</p>
+                        
+                        <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white/90">{{ app()->getLocale() === 'ar' ? 'زيارة مهندس مختص' : 'Specialized Engineer Visit' }}</h4>
+                                    <p class="text-[10px] text-orange-400 font-bold">{{ number_format(\App\Livewire\ServiceGrid::CONSTRUCTION_WORKING_EXPENSE_SAR ?? 500, 0) }} SAR / {{ app()->getLocale() === 'ar' ? 'زيارة' : 'visit' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-1">
+                                <button wire:click.stop="$set('constructionVisits', {{ max(1, $constructionVisits - 1) }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                                </button>
+                                <span class="w-8 text-center font-black text-white">{{ $constructionVisits }}</span>
+                                <button wire:click.stop="$set('constructionVisits', {{ min(30, $constructionVisits + 1) }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     {{-- Urgency Toggle --}}
                     <div>
-                        <label class="text-sm font-medium text-white/80 block mb-3">{{ __('When do you need it?') }}</label>
-                        <div class="grid grid-cols-2 gap-3">
+                        <label class="text-sm font-bold text-white/90 block mb-4">{{ __('When do you need it?') }}</label>
+                        <div class="grid grid-cols-2 gap-4">
                             <button wire:click="$set('urgency', 'scheduled')"
-                                class="p-4 rounded-2xl border-2 transition-all duration-300 text-center {{ $urgency === 'scheduled' ? 'border-blue-500 bg-violet-500/10' : 'border-slate-200 bg-white/80 border border-slate-100/50 hover:border-slate-300' }}">
-                                <svg class="w-6 h-6 mx-auto mb-2 {{ $urgency === 'scheduled' ? 'text-violet-600' : 'text-white/70' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                class="group p-4 rounded-[1.5rem] border-2 transition-all duration-300 text-center relative overflow-hidden {{ $urgency === 'scheduled' ? 'border-violet-500 bg-violet-500/20' : 'border-white/5 bg-white/5 hover:border-white/10' }}">
+                                <svg class="w-6 h-6 mx-auto mb-2 transition-colors {{ $urgency === 'scheduled' ? 'text-violet-400' : 'text-white/30 group-hover:text-white/50' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
-                                <div class="text-sm font-semibold {{ $urgency === 'scheduled' ? 'text-violet-700' : 'text-white/80' }}">{{ __('Scheduled') }}</div>
-                                <div class="text-xs text-white/70 mt-0.5">{{ __('Pick a time') }}</div>
+                                <div class="text-xs font-bold {{ $urgency === 'scheduled' ? 'text-white' : 'text-white/60 group-hover:text-white/80' }}">{{ __('Scheduled') }}</div>
+                                <div class="text-[9px] uppercase tracking-wider text-white/40 mt-1 font-bold">{{ app()->getLocale() === 'ar' ? 'اختر الوقت' : 'Pick a time' }}</div>
                             </button>
                             <button wire:click="$set('urgency', 'urgent')"
-                                class="p-4 rounded-2xl border-2 transition-all duration-300 text-center {{ $urgency === 'urgent' ? 'border-red-500 bg-red-500/10 urgent-flash' : 'border-slate-200 bg-white/80 border border-slate-100/50 hover:border-slate-300' }}">
-                                <svg class="w-6 h-6 mx-auto mb-2 {{ $urgency === 'urgent' ? 'text-red-400' : 'text-white/70' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                class="group p-4 rounded-[1.5rem] border-2 transition-all duration-300 text-center relative overflow-hidden {{ $urgency === 'urgent' ? 'border-orange-500 bg-orange-500/20 urgent-flash' : 'border-white/5 bg-white/5 hover:border-white/10' }}">
+                                <svg class="w-6 h-6 mx-auto mb-2 transition-colors {{ $urgency === 'urgent' ? 'text-orange-400' : 'text-white/30 group-hover:text-white/50' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                 </svg>
-                                <div class="text-sm font-semibold {{ $urgency === 'urgent' ? 'text-red-300' : 'text-white/80' }}">{{ __('Urgent') }}</div>
-                                <div class="text-xs text-white/70 mt-0.5">{{ __('Right Now') }}</div>
+                                <div class="text-xs font-bold {{ $urgency === 'urgent' ? 'text-white' : 'text-white/60 group-hover:text-white/80' }}">{{ __('Urgent') }}</div>
+                                <div class="text-[9px] uppercase tracking-wider text-white/40 mt-1 font-bold">{{ app()->getLocale() === 'ar' ? 'الآن فوراً' : 'Right Now' }}</div>
                             </button>
                         </div>
                     </div>
 
                     {{-- Address / Location --}}
                     <div>
-                        <label class="text-sm font-medium text-white/80 block mb-3">{{ __('Your Location') }}</label>
-                        <div class="relative">
+                        <label class="text-sm font-bold text-white/90 block mb-4">{{ __('Your Location') }}</label>
+                        <div class="relative group">
                             <input type="text" wire:model="address" placeholder="{{ __('Enter your address or use GPS') }}"
-                                class="w-full px-4 py-3.5 pl-12 rtl:pl-4 rtl:pr-12 rounded-2xl bg-white/80 border border-slate-100/50 border border-slate-200 text-sm text-white/95 placeholder-slate-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all">
-                            <svg class="w-5 h-5 text-white/70 absolute left-4 rtl:right-4 rtl:left-auto top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                class="w-full px-5 py-4 pl-12 rtl:pl-4 rtl:pr-12 rounded-2xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:border-violet-500/50 focus:bg-white/10 outline-none transition-all">
+                            <svg class="w-5 h-5 text-white/30 absolute left-4 rtl:right-4 rtl:left-auto top-1/2 -translate-y-1/2 group-focus-within:text-violet-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
-                        <button type="button" onclick="getLocation()" class="mt-2 text-xs text-violet-600 hover:text-violet-700 flex items-center gap-1 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
+                        <button type="button" onclick="getLocation()" class="mt-3 text-xs text-violet-400 hover:text-violet-300 flex items-center gap-2 transition-colors font-bold">
+                            <div class="w-6 h-6 rounded-lg bg-violet-500/20 flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
                             {{ __('Use my current location') }}
                         </button>
                     </div>
 
-                    {{-- Price Summary --}}
-                    <div class="glass rounded-2xl p-5">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-white/70">{{ __('Unit Price') }}</span>
-                            <span class="text-sm">
-                                @if($urgency === 'urgent')
-                                    <span class="line-through text-white/70 mr-1">{{ number_format($selectedOption->base_price, 2) }}</span>
-                                    {{ number_format($selectedOption->base_price * $selectedOption->urgent_multiplier, 2) }}
-                                @else
-                                    {{ number_format($selectedOption->base_price, 2) }}
-                                @endif
-                                {{ __('SAR') }}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-white/70">{{ __('Quantity') }}</span>
-                            <span class="text-sm">{{ $quantity }} {{ app()->getLocale() === 'ar' ? $selectedOption->unit_label_ar : $selectedOption->unit_label_en }}</span>
-                        </div>
-                        @if($urgency === 'urgent')
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm text-orange-400">{{ __('Urgent Fee') }}</span>
-                                <span class="text-sm text-orange-400">{{ number_format(($selectedOption->urgent_multiplier - 1) * 100, 0) }}%</span>
-                            </div>
-                        @endif
-                        <div class="border-t border-slate-200 my-3"></div>
-                        <div class="flex items-center justify-between">
-                            <span class="font-semibold">{{ __('Total') }}</span>
-                            <span class="text-2xl font-bold font-[Outfit] text-violet-600">
-                                {{ number_format($calculatedPrice, 2) }}
-                                <span class="text-sm font-normal text-white/70">{{ __('SAR') }}</span>
-                            </span>
-                        </div>
-                    </div>
-
                     {{-- Action Buttons --}}
-                    <div class="sticky bottom-0 bg-white/95 backdrop-blur-md pt-3 pb-6 mt-2 border-t border-slate-100/80 -mx-5 sm:-mx-6 px-5 sm:px-6 z-10">
-                        @auth
-                            <button wire:click="confirmBooking"
-                                data-tooltip="{{ app()->getLocale() === 'ar' ? 'سيُرسَل فني معتمد إلى موقعك فوراً' : 'A verified technician will be dispatched to your location' }}"
-                                class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold text-base shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                                {{ __('Confirm Booking & Pay') }}
-                            </button>
-                        @else
-                            @if($showOtpInput)
-                                <div class="space-y-3 pb-2">
-                                    <div class="relative">
-                                        <input type="text" wire:model="otp" placeholder="{{ __('Enter OTP (Check Demo logs)') }}" class="w-full text-center tracking-[0.5em] text-xl font-bold px-4 py-3 rounded-2xl bg-white/5 border border-slate-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all">
-                                    </div>
-                                    @error('otp') <p class="text-xs text-red-500 text-center">{{ $message }}</p> @enderror
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <button wire:click="$set('showOtpInput', false)" class="py-3.5 rounded-2xl bg-white/10 text-white/80 font-bold text-sm hover:bg-slate-200 transition-all">
-                                            {{ __('Cancel') }}
-                                        </button>
-                                        <button wire:click="verifyAndBook" class="py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]">
-                                            {{ __('Verify & Book') }}
-                                        </button>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="space-y-3 pb-2">
-                                    <p class="text-[11px] text-center text-white/70 font-medium">{{ __('No account needed! Just verify your phone.') }}</p>
-                                    <div class="relative">
-                                        <input type="tel" wire:model="phone" placeholder="{{ __('Phone Number') }}" class="w-full px-4 py-3.5 rtl:pr-4 pl-12 rounded-2xl bg-white/5 border border-slate-200 text-sm text-white/95 placeholder-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" dir="ltr">
-                                        <svg class="w-5 h-5 text-white/60 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                    </div>
-                                    @error('phone') <p class="text-xs text-red-500 text-center">{{ $message }}</p> @enderror
-                                    <button wire:click="sendOtp" class="w-full py-3.5 rounded-2xl bg-slate-800 text-white font-bold text-sm shadow-lg shadow-slate-800/20 hover:shadow-slate-800/40 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                                        {{ __('Send OTP & Book') }}
-                                    </button>
-                                </div>
-                            @endif
-                        @endauth
+                    <div class="sticky bottom-0 bg-[#120720]/95 backdrop-blur-xl pt-4 pb-6 mt-4 border-t border-violet-500/20 -mx-5 sm:-mx-6 px-5 sm:px-6 z-10">
+                        <button wire:click="openCheckoutModal"
+                            class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold text-base shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                            {{ __('Confirm Selections') }}
+                        </button>
                     </div>
+                </div>
+            </div>
+        </div>
+        </template>
+
+        {{-- ── 🛒 CHECKOUT MODAL (Modal 1) ───────────────────────── --}}
+        @if($showCheckoutModal)
+        <template x-teleport="body">
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-[#0a0514]/80 backdrop-blur-sm" wire:click="$set('showCheckoutModal', false)"></div>
+            <div class="relative w-full max-w-md bg-[#120720] border border-violet-500/30 rounded-[2rem] p-6 shadow-2xl slide-enter z-10 max-h-[90vh] overflow-y-auto">
+                <button wire:click="$set('showCheckoutModal', false)" class="absolute top-4 rtl:left-4 ltr:right-4 text-white/40 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                
+                <h3 class="text-xl font-bold text-white font-[Outfit] mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    {{ app()->getLocale() === 'ar' ? 'تأكيد الطلب' : 'Confirm Order' }}
+                </h3>
+
+                {{-- Price Summary inside Modal --}}
+                <div class="bg-white/5 rounded-[1.5rem] p-5 border border-white/5 mb-6">
+                    <div class="space-y-3 font-[Outfit]">
+                        @php $subTotal = 0; @endphp
+                        @foreach($cart as $id => $item)
+                            @php 
+                                $opt = \App\Models\ServiceOption::find($id);
+                                $itemPrice = ($urgency === 'urgent' && $opt) ? $opt->base_price * $opt->urgent_multiplier : ($opt->base_price ?? 0);
+                                $subTotal += ($itemPrice * $item['quantity']);
+                            @endphp
+                            <div class="flex items-center justify-between opacity-70">
+                                <span class="text-xs font-bold text-white line-clamp-1 flex-1 mr-4">
+                                    {{ app()->getLocale() === 'ar' ? $item['name_ar'] : $item['name_en'] }} (x{{ $item['quantity'] }})
+                                </span>
+                                <span class="text-xs font-semibold text-white/80 whitespace-nowrap">
+                                    {{ number_format($itemPrice * $item['quantity'], 0) }} SAR
+                                </span>
+                            </div>
+                        @endforeach
+                        
+                        <div class="border-t border-white/10 pt-3 mt-1"></div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-white/70">{{ app()->getLocale() === 'ar' ? 'الإجمالي النهائي' : 'Total' }}</span>
+                            <span class="text-xl font-bold font-[Outfit] text-orange-400">
+                                {{ number_format($calculatedPrice, 0) }} SAR
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Auth / OTP Logic --}}
+                @auth
+                    <button wire:click="$set('showPaymentModal', true); $set('showCheckoutModal', false)"
+                        class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold text-base shadow-lg shadow-orange-500/20 active:scale-[0.98]">
+                        {{ __('Proceed to Payment') }}
+                    </button>
+                @else
+                    @if($showOtpInput)
+                        <div class="space-y-3">
+                            <input type="text" wire:model="otp" placeholder="{{ __('Enter OTP (1234)') }}" class="w-full text-center tracking-[0.5em] text-xl font-bold px-4 py-3 rounded-2xl bg-white/5 border border-slate-200 focus:border-orange-500 outline-none transition-all">
+                            @error('otp') <p class="text-xs text-red-500 text-center">{{ $message }}</p> @enderror
+                            <div class="grid grid-cols-2 gap-2">
+                                <button wire:click="$set('showOtpInput', false)" class="py-3.5 rounded-2xl bg-white/10 text-white/80 font-bold hover:bg-white/20 transition-all">{{ __('Cancel') }}</button>
+                                <button wire:click="verifyAndBook" class="py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all">{{ __('Verify') }}</button>
+                            </div>
+                        </div>
+                    @else
+                        <div class="space-y-3">
+                            @if($needsRegistration)
+                                <input type="text" wire:model="clientName" placeholder="{{ app()->getLocale() === 'ar' ? 'الاسم الكامل' : 'Full Name' }}" class="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-slate-200 text-white placeholder-white/40 focus:border-orange-500 outline-none transition-all">
+                                @error('clientName') <p class="text-xs text-red-500 text-center">{{ $message }}</p> @enderror
+                            @endif
+                            <input type="tel" wire:model="phone" placeholder="{{ __('Phone Number (05...)') }}" class="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-slate-200 text-white placeholder-white/40 focus:border-orange-500 outline-none transition-all" dir="ltr" {{ $needsRegistration ? 'readonly' : '' }}>
+                            @error('phone') <p class="text-xs text-red-500 text-center">{{ $message }}</p> @enderror
+                            <button wire:click="sendOtp" class="w-full py-3.5 rounded-2xl bg-white text-[#120720] font-bold text-base shadow-lg shadow-white/20 active:scale-[0.98] mt-2">
+                                {{ __('Send OTP') }}
+                            </button>
+                        </div>
+                    @endif
+                @endauth
+            </div>
+        </div>
+        </template>
+        @endif
+
+        {{-- ── 💳 PAYMENT MODAL (Modal 2) ───────────────────────── --}}
+        @if($showPaymentModal)
+        <template x-teleport="body">
+        <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-[#0a0514]/80 backdrop-blur-sm" wire:click="$set('showPaymentModal', false)"></div>
+            <div class="relative w-full max-w-md bg-[#120720] border border-violet-500/30 rounded-[2rem] p-6 shadow-2xl slide-enter z-10 max-h-[90vh] overflow-y-auto">
+                <button wire:click="$set('showPaymentModal', false); $set('showCheckoutModal', true)" class="absolute top-4 rtl:left-4 ltr:right-4 text-white/40 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                
+                <h3 class="text-xl font-bold text-white font-[Outfit] mb-2 text-center">
+                    {{ app()->getLocale() === 'ar' ? 'طريقة الدفع' : 'Payment Method' }}
+                </h3>
+                <p class="text-center text-white/50 text-sm mb-6">{{ number_format($calculatedPrice, 0) }} SAR</p>
+
+                <div class="space-y-3 mb-6">
+                    <label class="flex items-center gap-3 p-4 rounded-xl border {{ $paymentMethod === 'apple' ? 'border-violet-500 bg-violet-500/10' : 'border-white/10 bg-white/5' }} cursor-pointer transition-all">
+                        <input type="radio" wire:model.live="paymentMethod" value="apple" class="sr-only">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center {{ $paymentMethod === 'apple' ? 'border-violet-500' : 'border-white/20' }}">
+                            @if($paymentMethod === 'apple') <div class="w-2.5 h-2.5 rounded-full bg-violet-500"></div> @endif
+                        </div>
+                        <span class="flex-1 font-bold text-white">Apple Pay</span>
+                        <div class="h-6 w-10 bg-white/10 rounded flex items-center justify-center text-xs"></div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-4 rounded-xl border {{ $paymentMethod === 'mada' ? 'border-violet-500 bg-violet-500/10' : 'border-white/10 bg-white/5' }} cursor-pointer transition-all">
+                        <input type="radio" wire:model.live="paymentMethod" value="mada" class="sr-only">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center {{ $paymentMethod === 'mada' ? 'border-violet-500' : 'border-white/20' }}">
+                            @if($paymentMethod === 'mada') <div class="w-2.5 h-2.5 rounded-full bg-violet-500"></div> @endif
+                        </div>
+                        <span class="flex-1 font-bold text-white">Mada</span>
+                        <div class="h-6 w-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded flex items-center justify-center text-[8px] font-black italic">mada</div>
+                    </label>
+                    
+                    <label class="flex items-center gap-3 p-4 rounded-xl border {{ $paymentMethod === 'visa' ? 'border-violet-500 bg-violet-500/10' : 'border-white/10 bg-white/5' }} cursor-pointer transition-all">
+                        <input type="radio" wire:model.live="paymentMethod" value="visa" class="sr-only">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center {{ $paymentMethod === 'visa' ? 'border-violet-500' : 'border-white/20' }}">
+                            @if($paymentMethod === 'visa') <div class="w-2.5 h-2.5 rounded-full bg-violet-500"></div> @endif
+                        </div>
+                        <span class="flex-1 font-bold text-white">Credit Card (Visa/Mastercard)</span>
+                        <div class="h-6 w-10 bg-blue-600 rounded flex items-center justify-center text-[10px] font-bold italic">VISA</div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-4 rounded-xl border {{ $paymentMethod === 'cash' ? 'border-orange-500 bg-orange-500/10' : 'border-white/10 bg-white/5' }} cursor-pointer transition-all">
+                        <input type="radio" wire:model.live="paymentMethod" value="cash" class="sr-only">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center {{ $paymentMethod === 'cash' ? 'border-orange-500' : 'border-white/20' }}">
+                            @if($paymentMethod === 'cash') <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div> @endif
+                        </div>
+                        <span class="flex-1 font-bold text-white {{ $paymentMethod === 'cash' ? 'text-orange-400' : '' }}">
+                            {{ app()->getLocale() === 'ar' ? 'الدفع لاحقاً (نقداً/شبكة للـفني)' : 'Pay Later (Cash/Card after service)' }}
+                        </span>
+                    </label>
+                </div>
+
+                <div wire:loading wire:target="processPaymentAndBook" class="text-center py-4 w-full text-violet-400 animate-pulse text-sm font-bold">
+                    {{ app()->getLocale() === 'ar' ? 'جاري معالجة الدفع...' : 'Processing Payment...' }}
+                </div>
+
+                <button wire:click="processPaymentAndBook" wire:loading.remove wire:target="processPaymentAndBook"
+                    class="w-full py-4 rounded-2xl {{ $paymentMethod === 'cash' ? 'bg-orange-500' : 'bg-gradient-to-r from-violet-600 to-indigo-600' }} text-white font-bold shadow-lg shadow-violet-500/20 active:scale-[0.98] transition-all">
+                    @if($paymentMethod === 'cash')
+                        {{ app()->getLocale() === 'ar' ? 'تأكيد الحجز' : 'Confirm Booking' }}
+                    @else
+                        {{ app()->getLocale() === 'ar' ? 'دفع ' . number_format($calculatedPrice, 0) . ' SAR' : 'Pay ' . number_format($calculatedPrice, 0) . ' SAR' }}
+                    @endif
+                </button>
+            </div>
+        </div>
+        </template>
+        @endif
                 </div>
             </div>
         </div>
@@ -758,10 +929,6 @@
                         <span class="text-slate-500">{{ app()->getLocale() === 'ar' ? 'الهاتف' : 'Phone' }}</span>
                         <a href="tel:114247888" class="font-semibold text-violet-600 hover:text-violet-800 transition-colors font-mono">114247888</a>
                     </li>
-                    <li class="flex items-center justify-between py-2">
-                        <span class="text-slate-500">{{ app()->getLocale() === 'ar' ? 'المدير العام' : 'Director' }}</span>
-                        <span class="font-semibold text-slate-800 text-end text-xs">{{ app()->getLocale() === 'ar' ? 'مسفر بن عبدالله الهرجاني' : 'Musfer Al-Harjani' }}</span>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -777,7 +944,7 @@
                 {{-- Brand Column --}}
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <img src="/images/logo.png" alt="Al-Kifah Logo" class="w-12 h-12 rounded-xl object-cover">
+                        <img src="{{ asset('images/logo.png') }}?v={{ @filemtime(public_path('images/logo.png')) ?: time() }}" alt="Al-Kifah Logo" class="w-12 h-12 rounded-xl object-cover">
                         <div>
                             <p class="text-white font-bold font-[Outfit] text-base">{{ app()->getLocale() === 'ar' ? 'الكفاح العالمية' : 'Al Kifah International' }}</p>
                             <p class="text-violet-300/60 text-xs">{{ app()->getLocale() === 'ar' ? 'خدمات منزلية متميزة' : 'Premium Home Services' }}</p>
@@ -971,25 +1138,89 @@
 
         </div>
     </nav>
+
+    {{-- ── Smart Visual Diagnosis Component ────────────────────────── --}}
+    <livewire:visual-diagnosis />
+
 </div>
 
 @push('scripts')
-<script>
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                @this.set('latitude', position.coords.latitude);
-                @this.set('longitude', position.coords.longitude);
-                @this.set('address', 'Location detected (' + position.coords.latitude.toFixed(4) + ', ' + position.coords.longitude.toFixed(4) + ')');
-            }, function(error) {
-                alert('{{ app()->getLocale() === 'ar' ? 'تعذر تحديد موقعك. الرجاء إدخاله يدوياً.' : 'Unable to get location. Please enter your address manually.' }}');
-            });
-        }
-    }
+    <script>
+        async function getLocation() {
+            @this.set('address', '{{ app()->getLocale() === 'ar' ? 'جاري تحديد موقعك...' : 'Locating you...' }}');
+            
+            // Browsers require HTTPS for navigator.geolocation (localhost is often an exception)
+            const isSecure = window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-    // Launch first-visit tour after a short delay
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => window.KifahTour?.launch('home'), 800);
-    });
-</script>
+            if (isSecure && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    @this.set('latitude', lat);
+                    @this.set('longitude', lng);
+                    @this.set('address', '{{ app()->getLocale() === "ar" ? "تم تحديد الموقع (GPS)" : "Location detected (GPS)" }} (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')');
+                }, function(error) {
+                    console.warn('Browser GPS failed, trying IP fallback...', error);
+                    fetchIpLocation();
+                }, { 
+                    timeout: 12000, 
+                    enableHighAccuracy: true, 
+                    maximumAge: 0 
+                });
+            } else {
+                fetchIpLocation();
+            }
+        }
+
+        async function fetchIpLocation() {
+            // Try multiple fallback services for robustness
+            const services = [
+                'https://ipapi.co/json/',
+                'http://ip-api.com/json'
+            ];
+
+            for (const url of services) {
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    // Normalizing response (ip-api uses lat/lon, ipapi uses latitude/longitude)
+                    const lat = data.latitude || data.lat;
+                    const lng = data.longitude || data.lon;
+                    const city = data.city || '';
+
+                    if (lat && lng) {
+                        @this.set('latitude', lat);
+                        @this.set('longitude', lng);
+                        @this.set('address', city + ' ({{ app()->getLocale() === "ar" ? "تحديد تلقائي" : "Auto-detected" }})');
+                        return; // Success!
+                    }
+                } catch (e) {
+                    console.error(`Fallback service ${url} failed:`, e);
+                }
+            }
+            
+            showLocationError();
+        }
+
+        function showLocationError() {
+            let msg = '{{ app()->getLocale() === 'ar' ? 'تعذر تحديد موقعك تلقائياً.' : 'Positioning unavailable.' }}';
+            
+            if (!window.isSecureContext) {
+                msg += ' {{ app()->getLocale() === 'ar' ? '(يتطلب HTTPS للعمل التلقائي). الرجاء كتابة العنوان أدناه.' : '(HTTPS required for auto-detection). Please type your address below.' }}';
+            } else {
+                msg += ' {{ app()->getLocale() === 'ar' ? 'الرجاء إدخال عنوانك يدوياً.' : 'Please enter your address manually.' }}';
+            }
+            alert(msg);
+        }
+
+        // Scrolling & Tour logic
+        document.addEventListener('livewire:initialized', () => {
+            // Livewire JS Initialization Area
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => window.KifahTour?.launch('home'), 800);
+        });
+    </script>
 @endpush

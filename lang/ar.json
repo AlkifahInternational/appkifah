@@ -2,7 +2,6 @@
     "Al-Kifah Global": "الكفاح جلوبال",
     "Al-Kifah Global Co.": "شركة الكفاح العالمية",
     "Professional Services at Your Fingertips": "خدمات احترافية في متناول يدك",
-
     "Login": "تسجيل دخول",
     "Login to Book": "سجل الدخول للحجز",
     "Sign in to your account": "تسجيل الدخول إلى حسابك",
@@ -13,11 +12,9 @@
     "Signing in...": "جاري تسجيل الدخول...",
     "Demo Accounts": "حسابات تجريبية",
     "Logout": "خروج",
-
     "Super Admin": "المسؤول العام",
     "Admin": "المسؤول",
     "View Site": "عرض الموقع",
-
     "Dashboard": "لوحة التحكم",
     "Live Orders": "الطلبات المباشرة",
     "Agents": "الوكلاء",
@@ -32,7 +29,11 @@
     "Back to Dashboard": "العودة للوحة التحكم",
     "Back to Services": "العودة للخدمات",
     "View all": "عرض الكل",
-
+    "Add": "إضافة",
+    "Add to cart": "إضافة للسلة",
+    "Book Services": "حجز الخدمات",
+    "Total Estimate": "إجمالي القيمة التقديرية",
+    "Close": "إغلاق",
     "Total Revenue": "إجمالي الإيرادات",
     "Total Orders": "إجمالي الطلبات",
     "Active Orders": "الطلبات النشطة",
@@ -45,7 +46,6 @@
     "Audit Trail": "سجل النشاط",
     "No audit logs yet": "لا يوجد سجل نشاط بعد",
     "orders waiting for technician dispatch": "طلبات تنتظر إسناد الفني",
-
     "Dispatch Center": "مركز التوجيه والتحكم",
     "Auto-refreshes every 4 seconds": "يُحدَّث تلقائياً كل 4 ثوانٍ",
     "Pending Dispatch": "بانتظار الإسناد",
@@ -57,7 +57,6 @@
     "No pending orders in queue.": "لا توجد طلبات معلقة في قائمة الانتظار.",
     "These orders have not been assigned yet. They will be dispatched automatically.": "لم يتم إسناد هذه الطلبات بعد. سيتم توزيعها تلقائياً.",
     "No orders in this category.": "لا توجد طلبات في هذه الفئة.",
-
     "Pending": "معلق",
     "Active": "نشط",
     "Placed": "مُقدَّم",
@@ -71,7 +70,6 @@
     "Pending Approval": "في انتظار الموافقة",
     "No pending orders": "لا يوجد طلبات معلقة",
     "No active orders": "لا توجد طلبات جارية",
-
     "Order Placed": "تم الطلب",
     "Order Progress": "تقدم الطلب",
     "Order Total": "إجمالي الطلب",
@@ -84,7 +82,6 @@
     "Mark this job as completed?": "هل تريد تعليم هذه المهمة كمكتملة؟",
     "Navigate": "توجيه",
     "Address pending": "العنوان معلق",
-
     "Live GPS Location": "الموقع الحي عبر GPS",
     "GPS location not yet available": "موقع GPS غير متاح بعد",
     "View on Google Maps": "عرض على خرائط Google",
@@ -95,7 +92,6 @@
     "Guest": "ضيف",
     "Qty": "الكمية",
     "URGENT": "عاجل",
-
     "Payment Methods": "طرق الدفع",
     "Moyasar Gateway": "بوابة ميسر",
     "Saudi-certified payment gateway supporting Mada, Visa, Apple Pay": "بوابة دفع معتمدة سعودياً تدعم مدى وفيزا وApple Pay",
@@ -123,7 +119,6 @@
     "IBAN": "رقم الآيبان",
     "Shown to clients who choose bank transfer": "يُعرَض للعملاء الذين يختارون التحويل البنكي",
     "Save Bank Details": "حفظ البيانات البنكية",
-
     "Platform Settings & Terms": "إعدادات المنصة والشروط",
     "Control commissions, taxes, and conditions": "تحكم في العمولات والضرائب والشروط",
     "Financial Settings (ZATCA & Commission)": "الإعدادات المالية (هيئة الزكاة والجمارك والعمولة)",
@@ -137,7 +132,6 @@
     "Settings and Policy saved successfully.": "تم حفظ الإعدادات والسياسة بنجاح.",
     "Manage Services": "إدارة الخدمات",
     "Terms & Policies": "الشروط والسياسات",
-
     "Services & Pricing": "الخدمات والتسعير",
     "Control your dynamic platform tariffs": "تحكم في أسعار منصتك بشكل ديناميكي",
     "Option": "الخيار",
@@ -172,7 +166,6 @@
     "Service deleted.": "تم حذف الخدمة.",
     "Sub-service deleted.": "تم حذف الخدمة الفرعية.",
     "Option deleted.": "تم حذف الخيار.",
-
     "Agent Management": "إدارة الوكلاء",
     "Manage technicians, verify profiles, control availability": "إدارة الفنيين والتحقق من ملفاتهم والتحكم في توفرهم",
     "Add Technician": "إضافة فني",
@@ -205,7 +198,6 @@
     "Verified = can accept jobs": "موثق = يمكنه قبول المهام",
     "Available = currently online & dispatachable": "متاح = متصل الآن ويمكن إرساله",
     "total": "الإجمالي",
-
     "Technician Portal": "بوابة الفني",
     "Active Jobs": "المهام النشطة",
     "Recently Completed": "المنجزة مؤخراً",
@@ -224,33 +216,31 @@
     "Available Techs": "فنيين متاحين",
     "Available Technicians": "الفنيون المتاحون",
     "jobs": "مهام",
-
     "My Bookings": "حجوزاتي",
     "New Booking": "حجز جديد",
     "Book a Service": "احجز خدمة",
     "Past Orders": "الطلبات السابقة",
     "No past orders": "لا توجد طلبات سابقة",
-
     "Our Services": "خدماتنا",
     "Choose a service category to get started": "اختر فئة الخدمة للبدء",
     "Explore": "استكشف",
     "Projects Done": "مشاريع منجزة",
-    "Expert Technicians": "فنيون خبراء",
+    "Expert Technicians": "فنيين خبراء",
     "Avg. Rating": "متوسط التقييم",
-    "Select a service type": "حدد نوع الخدمة",
+    "Select a service type": "اختر نوع الخدمة",
     "options": "خيارات",
-    "Choose your service and set options": "اختر خدمتك وحدد الخيارات",
+    "Choose your service and set options": "اختر الخدمة وحدد الخيارات المناسبة",
     "Per": "لكل",
     "Urgent": "عاجل",
     "Urgent Fee": "رسوم الخدمة العاجلة",
     "SAR": "ريال",
     "How many": "كم عدد",
-    "When do you need it?": "متى تريد الخدمة؟",
+    "When do you need it?": "متى تحتاج الخدمة؟",
     "Scheduled": "مجدول",
     "Pick a time": "اختر وقتاً",
     "Right Now": "الآن",
     "Your Location": "موقعك",
-    "Enter your address or use GPS": "أدخل عنوانك أو استخدم الـ GPS",
+    "Enter your address or use GPS": "أدخل عنوانك أو استخدم الموقع (GPS)",
     "Use my current location": "استخدم موقعي الحالي",
     "Total": "الإجمالي",
     "Quantity": "الكمية",
@@ -262,9 +252,17 @@
     "No account needed! Just verify your phone.": "لا حاجة لحساب! فقط تحقق من هاتفك.",
     "Enter OTP (Check Demo logs)": "أدخل رمز التحقق (راجع سجلات التجريب)",
     "Phone Number": "رقم الهاتف",
-
+    "Waiting for Technician Assignment": "في انتظار تعيين فني",
+    "Platform Analytics": "تحليلات المنصة",
+    "Deep Data Insights": "رؤية معمقة للبيانات",
+    "Revenue by Category": "العائدات حسب التصنيف",
+    "Orders by Category": "الطلبات حسب التصنيف",
     "Home": "الرئيسية",
     "Search": "بحث",
     "Orders": "الطلبات",
-    "Profile": "الملف الشخصي"
+    "Profile": "الملف الشخصي",
+    "A similar order was just created. Please wait a few seconds before retrying.": "تم إنشاء طلب مشابه للتو. يرجى الانتظار بضع ثوانٍ قبل المحاولة مرة أخرى.",
+    "Invalid OTP code.": "رمز التحقق (OTP) غير صحيح.",
+    "Confirm Selections": "تأكيد الاختيارات",
+    "Please select at least one service.": "الرجاء اختيار خدمة واحدة على الأقل."
 }

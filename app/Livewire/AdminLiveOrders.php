@@ -5,12 +5,15 @@ namespace App\Livewire;
 use App\Models\Order;
 use App\Enums\OrderStatus;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 
 #[Layout('layouts.admin')]
 class AdminLiveOrders extends Component
 {
+    use WithPagination;
+
     public string $filter = 'active'; // active | pending | all | completed
 
     #[On('order-placed')]
@@ -59,7 +62,7 @@ class AdminLiveOrders extends Component
             default     => $query,
         };
 
-        $orders = $query->take(50)->get();
+        $orders = $query->paginate(20);
 
         $counts = [
             'pending'   => Order::pending()->whereNull('technician_id')->count(),

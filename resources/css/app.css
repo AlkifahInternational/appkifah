@@ -38,17 +38,33 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    /* Note: smooth scroll is intentionally disabled — it conflicts with browser
+       momentum scrolling on iOS/Android and feels unnatural for long pages. */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Allow browser to optimize scroll independently */
+    overflow-x: hidden;
 }
 
 body {
     font-family: var(--font-sans);
-    background: linear-gradient(135deg, #fed7aa 0%, #e9d5ff 100%);
-    background-attachment: fixed;
+    /* REMOVED background-attachment:fixed — it forces full repaint on every scroll
+       frame and is the #1 cause of iOS/mobile scroll jank. Use a fixed pseudo-element instead. */
+    background-color: #f5e6ff;
+    background-image: linear-gradient(135deg, #fed7aa 0%, #e9d5ff 100%);
     color: var(--color-slate-800);
     min-height: 100dvh;
+}
+
+/* Fixed-position gradient background rendered on its own GPU layer */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, #fed7aa 0%, #e9d5ff 100%);
+    will-change: contents; /* stays on GPU, doesn't repaint on scroll */
+    pointer-events: none;
 }
 
 /* ── Depth Dark Mode Components ──────────────────────────── */
@@ -82,7 +98,7 @@ body {
 
 .gradient-dark {
     background: linear-gradient(135deg, #fdba74 0%, #d8b4fe 100%);
-    background-attachment: fixed;
+    /* Removed background-attachment:fixed — identical jank issue */
 }
 
 .gradient-gold {
@@ -95,25 +111,30 @@ body {
     overflow: hidden;
     border-radius: 1rem;
     padding: 1.25rem;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Promote to own GPU layer to prevent scroll repaints */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .service-card:hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-4px) scale(1.02) translateZ(0);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 .service-card:active {
-    transform: translateY(-1px) scale(0.99);
+    transform: translateY(-1px) scale(0.99) translateZ(0);
 }
 
 /* ── Buttons  ────────────────────────── */
+/* Limit button transition to transform/shadow only — 'all' is too expensive */
 button {
-    transition: all 0.3s ease !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
 }
 button:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
@@ -140,11 +161,27 @@ button:hover {
 }
 
 /* ── Animations ────────────────────────────────── */
-.slide-enter { animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-@keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+/* Faster, GPU-only animations (transform+opacity are compositor-thread only) */
+.slide-enter {
+    animation: slideIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes slideIn {
+    from { opacity: 0; transform: translate3d(20px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
 
-.fade-in { animation: fadeIn 0.5s ease forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate3d(0, 6px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Avoid animating cards that are off-screen */
+@media (prefers-reduced-motion: reduce) {
+    .slide-enter, .fade-in, .counter-spin, .modal-content { animation: none !important; }
+}
 
 .counter-spin { animation: counterUp 0.6s ease-out; }
 @keyframes counterUp { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
@@ -162,12 +199,17 @@ button:hover {
 input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; }
 
-/* Mobile Bottom Nav */
+/* Mobile Bottom Nav — fixed on its own GPU layer */
 .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
     z-index: 50;
     padding-bottom: env(safe-area-inset-bottom);
+    /* Own compositing layer prevents scroll repaints */
+    will-change: transform;
+    transform: translateZ(0);
+    /* Avoid triggering layout on parent scroll */
+    contain: layout style paint;
 }
 
 /* ── Tooltip System ─────────────────────────────── */

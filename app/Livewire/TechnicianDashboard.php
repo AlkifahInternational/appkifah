@@ -5,18 +5,29 @@ namespace App\Livewire;
 use App\Models\Order;
 use App\Models\TechnicianProfile;
 use App\Enums\OrderStatus;
+use App\Enums\UserRole;
 use App\Services\DispatchService;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TechnicianDashboard extends Component
 {
     public $tab = 'jobs';
     public bool $isAvailable = false;
 
+    private function ensureTechnicianRole(): void
+    {
+        if (Auth::user()?->role !== UserRole::TECHNICIAN) {
+            abort(403);
+        }
+    }
+
     public function mount()
     {
-        $profile = auth()->user()->technicianProfile;
+        $this->ensureTechnicianRole();
+        $profile = Auth::user()->technicianProfile;
         $this->isAvailable = $profile?->is_available ?? false;
     }
 
@@ -31,7 +42,8 @@ class TechnicianDashboard extends Component
     // ── Availability Toggle ─────────────────────────────
     public function toggleAvailability()
     {
-        $profile = auth()->user()->technicianProfile;
+        $this->ensureTechnicianRole();
+        $profile = Auth::user()->technicianProfile;
         if ($profile) {
             $this->isAvailable = !$this->isAvailable;
             $profile->update(['is_available' => $this->isAvailable]);
@@ -41,7 +53,8 @@ class TechnicianDashboard extends Component
     // ── GPS Ping (called from JS every 30s) ─────────────
     public function updateLocation(float $lat, float $lng)
     {
-        $profile = auth()->user()->technicianProfile;
+        $this->ensureTechnicianRole();
+        $profile = Auth::user()->technicianProfile;
         if ($profile) {
             $profile->update(['latitude' => $lat, 'longitude' => $lng]);
         }
@@ -50,18 +63,25 @@ class TechnicianDashboard extends Component
     // ── Manually Accept a Pending Order ────────────────
     public function acceptOrder(int $orderId)
     {
+        $this->ensureTechnicianRole();
+
+        if (!$this->isAvailable) {
+            session()->flash('job_message', __('Set your status to online before accepting orders.'));
+            return;
+        }
+
         $order = Order::where('id', $orderId)
             ->where('status', OrderStatus::PENDING)
             ->whereNull('technician_id')
             ->firstOrFail();
 
         $order->update([
-            'technician_id' => auth()->id(),
+            'technician_id' => Auth::id(),
             'status'        => OrderStatus::ASSIGNED,
         ]);
 
         // Update profile job counter
-        auth()->user()->technicianProfile?->increment('total_jobs');
+        Auth::user()->technicianProfile?->increment('total_jobs');
 
         // Broadcast change to admin & client
         $order->load(['client', 'technician']);
@@ -74,9 +94,16 @@ class TechnicianDashboard extends Component
 
     public function startJob(int $orderId)
     {
+        $this->ensureTechnicianRole();
+
         $order = Order::where('id', $orderId)
-            ->where('technician_id', auth()->id())
+            ->where('technician_id', Auth::id())
             ->firstOrFail();
+
+        if ($order->status !== OrderStatus::ASSIGNED && $order->status !== OrderStatus::EN_ROUTE) {
+            session()->flash('job_message', __('This job cannot be started in its current status.'));
+            return;
+        }
 
         $order->update([
             'status'     => OrderStatus::IN_PROGRESS,
@@ -91,9 +118,16 @@ class TechnicianDashboard extends Component
 
     public function completeJob(int $orderId)
     {
+        $this->ensureTechnicianRole();
+
         $order = Order::where('id', $orderId)
-            ->where('technician_id', auth()->id())
+            ->where('technician_id', Auth::id())
             ->firstOrFail();
+
+        if ($order->status !== OrderStatus::IN_PROGRESS) {
+            session()->flash('job_message', __('Only in-progress jobs can be completed.'));
+            return;
+        }
 
         $order->update([
             'status'       => OrderStatus::COMPLETED,
@@ -101,13 +135,13 @@ class TechnicianDashboard extends Component
         ]);
 
         // Update profile counters
-        $profile = auth()->user()->technicianProfile;
+        $profile = Auth::user()->technicianProfile;
         if ($profile) {
             $profile->increment('completed_jobs');
         }
 
         // Credit wallet with commission deducted
-        $commissionRate = (float) (\DB::table('settings')->where('key', 'commission_rate')->value('value') ?? 15) / 100;
+        $commissionRate = (float) (DB::table('settings')->where('key', 'commission_rate')->value('value') ?? 15) / 100;
         DispatchService::creditWallet($order, $commissionRate);
 
         // Broadcast completion to client + admin
@@ -119,7 +153,7 @@ class TechnicianDashboard extends Component
 
     public function render()
     {
-        $user    = auth()->user();
+        $user    = Auth::user();
         $profile = $user->technicianProfile;
         $wallet  = $user->wallet;
 

@@ -58,7 +58,7 @@
             </svg>
         </button>
         {{-- Logo image --}}
-        <img src="/images/logo.png" alt="Al-Kifah Logo"
+        <img src="{{ asset('images/logo.png') }}?v={{ @filemtime(public_path('images/logo.png')) ?: time() }}" alt="Al-Kifah Logo"
              class="w-16 h-16 rounded-2xl object-cover shadow-lg shadow-violet-900/60 mb-3"
              style="object-position: center;">
         {{-- Brand name --}}
@@ -176,47 +176,8 @@
                 </button>
                 
                 {{-- Notifications --}}
-                @php
-                    $unreadCount = auth()->user()->unreadNotifications->count();
-                @endphp
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all relative">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                        @if($unreadCount > 0)
-                            <span class="absolute top-0 right-0 flex h-2.5 w-2.5">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500 border border-[#1a0a2e]"></span>
-                            </span>
-                        @endif
-                    </button>
-                    
-                    {{-- Notifications Dropdown --}}
-                    <div x-show="open" @click.away="open = false" class="absolute {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-2 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="display: none;">
-                        <div class="p-3 border-b border-slate-100 bg-white/5 flex items-center justify-between">
-                            <span class="font-bold text-white/95">{{ app()->getLocale() === 'ar' ? 'الإشعارات' : 'Notifications' }}</span>
-                            @if($unreadCount > 0)
-                                <span class="text-xs font-semibold bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full">{{ $unreadCount }}</span>
-                            @endif
-                        </div>
-                        <div class="max-h-64 overflow-y-auto p-2">
-                            @forelse(auth()->user()->notifications()->take(5)->get() as $notification)
-                                <div class="p-3 {{ $notification->read_at ? 'opacity-60' : 'bg-orange-50/50' }} rounded-lg mb-1 flex gap-3 text-sm">
-                                    <div class="w-2 h-2 mt-1.5 rounded-full {{ $notification->read_at ? 'bg-slate-300' : 'bg-orange-500' }} shrink-0"></div>
-                                    <div>
-                                        <p class="text-white/95 font-medium">{{ $notification->data['message'] ?? 'Notification' }}</p>
-                                        <p class="text-xs text-white/70 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="p-4 text-center text-white/70 text-sm">
-                                    {{ app()->getLocale() === 'ar' ? 'لا توجد إشعارات جديدة' : 'No new notifications' }}
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
+                <livewire:admin-notifications />
+
                 <a href="/" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all" title="{{ __('View Site') }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 </a>

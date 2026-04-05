@@ -18,7 +18,6 @@ class DispatchService
             // No coords — just find any available tech
             $profile = TechnicianProfile::where('is_verified', true)
                 ->where('is_available', true)
-                ->whereNull('orders')
                 ->first();
         } else {
             // Haversine query — find 5 nearest available technicians

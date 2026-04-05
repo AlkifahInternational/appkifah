@@ -56,13 +56,13 @@
 
         {{-- ── Pending Orders Alert Badge ── --}}
         @if($pendingOrders > 0)
-        <div class="mb-6 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center gap-3">
+        <div class="mb-6 p-4 rounded-2xl bg-white border border-orange-500/30 flex items-center gap-3 shadow-lg shadow-orange-500/10">
             <span class="relative flex h-3 w-3">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
             </span>
-            <p class="text-orange-400 font-semibold text-sm">
-                <span class="font-bold">{{ $pendingOrders }}</span> {{ __('orders waiting for technician dispatch') }}
+            <p class="text-slate-900 font-bold text-sm">
+                <span class="text-orange-600">{{ $pendingOrders }}</span> {{ __('orders waiting for technician dispatch') }}
             </p>
         </div>
         @endif
@@ -75,10 +75,10 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                     {{ __('Terms & Policies') }}
                 </a>
-                <button class="flex items-center gap-2 p-3 rounded-xl bg-green-500/10 text-green-300 hover:bg-green-500/20 transition-all text-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    {{ __('Analytics') }}
-                </button>
+                <a href="{{ route('admin.analytics') }}" class="flex items-center gap-2 p-3 rounded-xl bg-violet-600/20 text-violet-300 hover:bg-violet-600/30 transition-all text-sm border border-violet-500/20 shadow-lg group">
+                    <svg class="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    {{ __('Platform Analytics') }}
+                </a>
                 <a href="{{ route('admin.services') }}" class="flex items-center gap-2 p-3 rounded-xl bg-orange-500/10 text-orange-400 font-bold hover:bg-orange-500/20 transition-all text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     {{ __('Manage Services') }}
@@ -98,7 +98,7 @@
         </div>
 
         {{-- ── Recent Orders (clickable) ── --}}
-        <div class="glass rounded-2xl p-5 mb-8 fade-in" style="animation-delay: 400ms">
+        <div class="glass rounded-2xl p-5 mb-8 fade-in" style="animation-delay: 600ms">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-semibold text-white/80">{{ __('Recent Orders') }}</h3>
                 <a href="{{ route('admin.orders.live') }}" class="text-xs text-violet-500 hover:text-violet-700 font-semibold">
@@ -111,28 +111,28 @@
                 <div class="space-y-3">
                     @foreach($recentOrders as $order)
                         <a href="{{ route('admin.orders.detail', $order->id) }}"
-                           class="flex items-center justify-between p-3 rounded-xl bg-white/80 border border-slate-100/50 hover:bg-violet-50 hover:border-violet-200 transition-all group cursor-pointer">
+                           class="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:bg-violet-50 hover:border-violet-300 transition-all group cursor-pointer shadow-sm shadow-slate-200/50">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center text-xs font-bold text-violet-600">
+                                <div class="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-xs font-bold text-violet-700">
                                     #{{ $order->id }}
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium">{{ $order->order_number }}</div>
-                                    <div class="text-xs text-white/70">{{ $order->client->name ?? 'N/A' }} · {{ $order->created_at->diffForHumans() }}</div>
+                                    <div class="text-sm font-bold text-slate-900">{{ $order->order_number }}</div>
+                                    <div class="text-xs font-semibold text-slate-500">{{ $order->client->name ?? 'N/A' }} · {{ $order->created_at->diffForHumans() }}</div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="text-right">
-                                    <div class="text-sm font-semibold">{{ number_format($order->total, 0) }} {{ __('SAR') }}</div>
-                                    <span class="inline-block text-[10px] px-2 py-0.5 rounded-lg
-                                        {{ $order->status === \App\Enums\OrderStatus::COMPLETED ? 'bg-green-500/10 text-green-400' :
-                                           ($order->status === \App\Enums\OrderStatus::PENDING ? 'bg-yellow-500/10 text-yellow-400' :
-                                           ($order->status === \App\Enums\OrderStatus::CANCELLED ? 'bg-red-500/10 text-red-400' :
-                                           'bg-violet-500/10 text-violet-600')) }}">
+                                    <div class="text-base font-black text-violet-800">{{ number_format($order->total, 0) }} {{ __('SAR') }}</div>
+                                    <span class="inline-block text-[10px] px-2 py-0.5 rounded-lg font-bold
+                                        {{ $order->status === \App\Enums\OrderStatus::COMPLETED ? 'bg-green-100 text-green-700 border border-green-200' :
+                                           ($order->status === \App\Enums\OrderStatus::PENDING ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                                           ($order->status === \App\Enums\OrderStatus::CANCELLED ? 'bg-red-100 text-red-700 border border-red-200' :
+                                           'bg-violet-100 text-violet-700 border border-violet-200')) }}">
                                         {{ $order->status->label() }}
                                     </span>
                                 </div>
-                                <svg class="w-4 h-4 text-white/50 group-hover:text-violet-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <svg class="w-5 h-5 text-slate-300 group-hover:text-violet-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </div>
                         </a>
                     @endforeach
@@ -148,13 +148,18 @@
             @else
                 <div class="space-y-3">
                     @foreach($recentLogs as $log)
-                        <div class="flex items-start gap-3 p-3 rounded-xl bg-white/80 border border-slate-100/50">
-                            <div class="w-8 h-8 rounded-lg bg-white/50/10 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm shadow-slate-100/50">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <div class="text-sm font-medium">{{ $log->action }}</div>
-                                <div class="text-xs text-white/70">{{ $log->user->name ?? 'System' }} · {{ $log->created_at->diffForHumans() }}</div>
+                                <div class="text-sm font-bold text-slate-900 leading-tight">{{ $log->action }}</div>
+                                <div class="text-xs font-semibold text-slate-500 mt-1.5 flex items-center gap-2">
+                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    {{ $log->user->name ?? 'System' }} 
+                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    {{ $log->created_at->diffForHumans() }}
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -162,4 +167,12 @@
             @endif
         </div>
     </main>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+             // Dashboard initialized
+        });
+    </script>
+    @endpush
 </div>

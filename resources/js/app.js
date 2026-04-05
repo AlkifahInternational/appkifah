@@ -55,44 +55,36 @@ function playStatusSound() {
 // ── Toast Notification ────────────────────────────────────────────────────
 function showToast(title, body, type = 'info', duration = 6000) {
     const id = 'toast-' + Date.now();
-    const colors = {
-        info:    'bg-violet-600',
-        success: 'bg-green-500',
-        urgent:  'bg-red-500',
-        warning: 'bg-orange-500',
+    const accents = {
+        info:    'border-violet-500',
+        success: 'border-green-500',
+        urgent:  'border-red-500',
+        warning: 'border-orange-500',
     };
+
+    const container = document.getElementById('toast-container') || (() => {
+        const c = document.createElement('div');
+        c.id = 'toast-container';
+        c.className = 'fixed bottom-4 right-4 z-[9999] flex flex-col-reverse gap-3 w-80 pointer-events-none';
+        document.body.appendChild(c);
+        return c;
+    })();
 
     const toast = document.createElement('div');
     toast.id = id;
     toast.className = `
-        fixed top-4 right-4 z-[9999] max-w-sm w-full rounded-2xl shadow-2xl
-        ${colors[type] ?? colors.info} text-white p-4 flex items-start gap-3
-        translate-x-full opacity-0 transition-all duration-500
+        bg-white border-l-4 ${accents[type] ?? accents.info} p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)]
+        flex items-start gap-3 translate-x-full opacity-0 transition-all duration-500 cursor-pointer pointer-events-auto
     `.trim();
 
     toast.innerHTML = `
         <div class="text-2xl shrink-0">${type === 'urgent' ? '⚡' : type === 'success' ? '✅' : '🔔'}</div>
         <div class="flex-1 min-w-0">
-            <div class="font-bold text-sm font-sans">${title}</div>
-            <div class="text-xs text-white/80 mt-0.5 truncate">${body}</div>
+            <div class="font-bold text-slate-900 text-sm font-sans">${title}</div>
+            <div class="text-xs font-semibold text-slate-500 mt-1 truncate">${body}</div>
         </div>
-        <button onclick="document.getElementById('${id}')?.remove()" class="text-white/60 hover:text-white text-lg leading-none shrink-0">✕</button>
+        <button onclick="this.closest('.transition-all').remove()" class="text-slate-300 hover:text-slate-500 text-lg leading-none shrink-0 transition-colors">✕</button>
     `;
-
-    // Ensure container exists
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'fixed top-4 right-4 z-[9999] flex flex-col gap-2 w-80';
-        document.body.appendChild(container);
-    }
-
-    // Reset positioning — use container approach
-    toast.className = `
-        rounded-2xl shadow-2xl ${colors[type] ?? colors.info} text-white p-4 flex items-start gap-3
-        translate-x-full opacity-0 transition-all duration-500
-    `.trim();
 
     container.appendChild(toast);
 

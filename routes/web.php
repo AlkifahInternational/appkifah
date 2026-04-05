@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     // Super Admin
     Route::middleware('super_admin')->group(function () {
         Route::get('/admin', AdminDashboard::class)->name('admin.dashboard');
+        Route::get('/admin/analytics', \App\Livewire\AdminAnalytics::class)->name('admin.analytics');
         Route::get('/admin/services', \App\Livewire\AdminServiceManager::class)->name('admin.services');
         Route::get('/admin/settings', \App\Livewire\AdminSettingsManager::class)->name('admin.settings');
         Route::get('/admin/agents', \App\Livewire\AdminAgentManager::class)->name('admin.agents');

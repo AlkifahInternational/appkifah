@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\GeminiDiagnosisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{id}', [ServiceController::class, 'show']);
 Route::get('/services/{id}/sub-services', [ServiceController::class, 'subServices']);
+
+// ── Smart Visual Diagnosis (Gemini AI) — Public, no auth required ──────────
+Route::post('/diagnose', [GeminiDiagnosisController::class, 'analyze'])
+    ->middleware('throttle:10,1'); // Max 10 requests per minute per IP
 
 // Protected Mobile Routes
 Route::middleware('auth:sanctum')->group(function () {

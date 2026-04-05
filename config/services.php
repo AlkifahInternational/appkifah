@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // ── Google Gemini Vision API ──────────────────────────────────────────────
+    'gemini' => [
+        'api_key'  => env('GEMINI_API_KEY', ''),
+        'endpoint' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+        'model'    => 'gemini-1.5-flash',
+    ],
+
 ];

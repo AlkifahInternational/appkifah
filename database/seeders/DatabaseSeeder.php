@@ -133,11 +133,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $software = Service::create([
-            'name_en' => 'Software Development',
-            'name_ar' => 'تطوير البرمجيات',
-            'slug' => 'software-development',
-            'description_en' => 'Custom software and web development solutions for your business.',
-            'description_ar' => 'حلول تطوير البرمجيات والمواقع المخصصة لعملك.',
+            'name_en' => 'Software Development and Marketing',
+            'name_ar' => 'تطوير البرمجيات والتسويق',
+            'slug' => 'software-dev-marketing',
+            'description_en' => 'Custom software, web development, and digital marketing solutions for your business.',
+            'description_ar' => 'حلول تطوير البرمجيات والمواقع والتسويق الرقمي المخصصة لعملك.',
             'icon'           => '💻',
             'color' => '#805AD5',
             'sort_order' => 4,

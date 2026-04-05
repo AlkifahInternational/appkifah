@@ -1,5 +1,5 @@
 // Service Worker for Al-Kifah PWA
-const CACHE_NAME = 'kifah-cache-v1';
+const CACHE_NAME = 'kifah-cache-v2';
 const urlsToCache = [
     '/',
     '/manifest.json',
