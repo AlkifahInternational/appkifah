@@ -364,7 +364,7 @@
                             · {{ number_format($calculatedPrice, 0) }} SAR
                         </p>
                     @else
-                        <p class="text-white/60 text-sm">{{ app()->getLocale() === 'ar' ? 'اختر المنتجات والخدمات — يمكنك اختيار أكثر من عنصر' : 'Select products & services — pick as many as you need' }}</p>
+                        <p class="text-black text-sm">{{ app()->getLocale() === 'ar' ? 'اختر المنتجات والخدمات — يمكنك اختيار أكثر من عنصر' : 'Select products & services — pick as many as you need' }}</p>
                     @endif
                 </div>
 
@@ -406,8 +406,22 @@
 
                             {{-- Product Cards (Two column grid for everything) --}}
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                                @foreach($group['options'] as $option)
+                                @foreach($group['options'] as $index => $option)
                                     @php $inCart = isset($cart[$option->id]); @endphp
+
+                                    @if($sub->slug === 'camera-packages' && $loop->index === 4)
+                                        <div class="col-span-full py-2 mb-2">
+                                            <div class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-orange-500/10 border border-orange-500/20">
+                                                <svg class="w-5 h-5 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                <p class="text-sm font-bold text-orange-300">
+                                                    {{ app()->getLocale() === 'ar' ? 'جميع الأسعار أدناه لا تشمل رسوم التركيب' : 'All the below items price are without installation fees' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div wire:key="cam-{{ $option->id }}" class="h-full">
                                         <div wire:click="toggleOption({{ $option->id }})"
                                             class="cursor-pointer h-full w-full flex flex-col text-{{ app()->getLocale() === 'ar' ? 'right' : 'left' }} rounded-xl border-l-4 {{ $meta['border'] }} p-3 border border-white/10 transition-all
@@ -437,14 +451,21 @@
                                                 @endif
                                             </div>
 
-                                            {{-- Qty controls --}}
                                             @if($inCart)
                                             <div class="mt-auto pt-2 border-t border-white/10 flex items-center justify-between w-full" wire:click.stop>
                                                 <span class="text-xs {{ $meta['text'] }} font-semibold">{{ app()->getLocale() === 'ar' ? 'الكمية' : 'Qty' }}</span>
                                                 <div class="flex items-center rounded-lg border border-white/20 overflow-hidden bg-black/20">
-                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, -1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
+                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, -1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">
+                                                        @if($cart[$option->id]['quantity'] <= 1)
+                                                            <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                        @else
+                                                            <span class="text-lg">−</span>
+                                                        @endif
+                                                    </button>
                                                     <span class="w-8 text-center text-sm font-bold text-white">{{ $cart[$option->id]['quantity'] }}</span>
-                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, 1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
+                                                    <button wire:click.stop="updateCartQuantity({{ $option->id }}, 1)" class="w-8 h-7 flex items-center justify-center text-white hover:bg-white/10 font-bold">
+                                                        <span class="text-lg">+</span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             @endif
@@ -562,19 +583,29 @@
                                 <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
                                     <div class="flex-1">
                                         <h4 class="text-xs font-bold text-white/90">{{ app()->getLocale() === 'ar' ? $item['name_ar'] : $item['name_en'] }}</h4>
-                                        <p class="text-[10px] text-white/40 mt-0.5">{{ __('Quantity') }}: {{ $item['quantity'] }}</p>
+                                        <p class="text-[10px] text-white/40 mt-0.5">{{ __('Quantity') }}:</p>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <div class="text-[10px] text-violet-400 font-bold font-[Outfit]">
+                                        <div class="flex items-center rounded-lg border border-white/20 overflow-hidden bg-black/20 mr-2">
+                                            <button wire:click.stop="updateCartQuantity({{ $id }}, -1)" class="w-7 h-6 flex items-center justify-center text-white hover:bg-white/10 font-bold transition-colors">
+                                                @if($item['quantity'] <= 1)
+                                                    <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                @else
+                                                    <span class="text-sm">−</span>
+                                                @endif
+                                            </button>
+                                            <span class="w-7 text-center text-xs font-bold text-white">{{ $item['quantity'] }}</span>
+                                            <button wire:click.stop="updateCartQuantity({{ $id }}, 1)" class="w-7 h-6 flex items-center justify-center text-white hover:bg-white/10 font-bold transition-colors">
+                                                <span class="text-sm">+</span>
+                                            </button>
+                                        </div>
+                                        <div class="text-[10px] text-violet-400 font-bold font-[Outfit] min-w-[60px] text-end">
                                             @php 
                                                $opt = \App\Models\ServiceOption::find($id);
                                                $itemPrice = ($urgency === 'urgent' && $opt) ? $opt->base_price * $opt->urgent_multiplier : ($opt->base_price ?? 0);
                                             @endphp
                                             {{ number_format($itemPrice * $item['quantity'], 0) }} SAR
                                         </div>
-                                        <button wire:click="toggleOption({{ $id }})" class="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-all">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                                        </button>
                                     </div>
                                 </div>
                             @endforeach

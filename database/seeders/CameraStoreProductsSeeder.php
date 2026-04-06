@@ -64,46 +64,6 @@ class CameraStoreProductsSeeder extends Seeder
         // ── Camera Packages ───────────────────────────────────────────────
         $cameraPackages = [
             [
-                'name_ar'        => 'باقة 2 كاميرا 8MP + DVR',
-                'name_en'        => '2-Camera 8MP Bundle + DVR',
-                'description_ar' => 'رؤية ليلية 60م، كاميرات خارجية عالية الدقة، جهاز تسجيل مشمول. السعر الأصلي 1,150 ريال.',
-                'description_en' => '60m night vision, outdoor HD cameras, DVR included. Original price 1,150 SAR.',
-                'base_price'     => 999,
-                'unit_label_ar'  => 'باقة',
-                'unit_label_en'  => 'package',
-                'sort_order'     => 1,
-            ],
-            [
-                'name_ar'        => 'باقة 4 كاميرا 8MP + DVR',
-                'name_en'        => '4-Camera 8MP Bundle + DVR',
-                'description_ar' => 'كاميرات داخلية وخارجية عالية الدقة 8 ميجابكسل مع DVR. السعر الأصلي 1,680 ريال.',
-                'description_en' => 'Indoor/outdoor 8MP cameras with DVR. Original price 1,680 SAR.',
-                'base_price'     => 1300,
-                'unit_label_ar'  => 'باقة',
-                'unit_label_en'  => 'package',
-                'sort_order'     => 2,
-            ],
-            [
-                'name_ar'        => 'باقة 6 كاميرا 8MP + DVR',
-                'name_en'        => '6-Camera 8MP Bundle + DVR',
-                'description_ar' => 'DVR 8 قنوات، 6 كاميرات 8 ميجابكسل. السعر الأصلي 1,990 ريال.',
-                'description_en' => '8-Channel DVR, 6 cameras at 8MP. Original price 1,990 SAR.',
-                'base_price'     => 1799,
-                'unit_label_ar'  => 'باقة',
-                'unit_label_en'  => 'package',
-                'sort_order'     => 3,
-            ],
-            [
-                'name_ar'        => 'باقة 8 كاميرا 8MP + DVR',
-                'name_en'        => '8-Camera 8MP Bundle + DVR',
-                'description_ar' => 'DVR 8 قنوات، 8 كاميرات 8 ميجابكسل. السعر الأصلي 2,250 ريال.',
-                'description_en' => '8-Channel DVR, 8 cameras at 8MP. Original price 2,250 SAR.',
-                'base_price'     => 1899,
-                'unit_label_ar'  => 'باقة',
-                'unit_label_en'  => 'package',
-                'sort_order'     => 4,
-            ],
-            [
                 'name_ar'        => 'باقة 3 كاميرا 5MP + DVR (شاملة التركيب)',
                 'name_en'        => '3-Camera 5MP Bundle + DVR (Includes Installation)',
                 'description_ar' => 'شاملة التركيب بالرياض. السعر الأصلي 1,600 ريال.',
@@ -111,7 +71,7 @@ class CameraStoreProductsSeeder extends Seeder
                 'base_price'     => 1400,
                 'unit_label_ar'  => 'باقة',
                 'unit_label_en'  => 'package',
-                'sort_order'     => 5,
+                'sort_order'     => 1,
             ],
             [
                 'name_ar'        => 'باقة 4 كاميرا 5MP + DVR (شاملة التركيب)',
@@ -121,7 +81,7 @@ class CameraStoreProductsSeeder extends Seeder
                 'base_price'     => 1500,
                 'unit_label_ar'  => 'باقة',
                 'unit_label_en'  => 'package',
-                'sort_order'     => 6,
+                'sort_order'     => 2,
             ],
             [
                 'name_ar'        => 'باقة 5 كاميرا 5MP + DVR (شاملة التركيب)',
@@ -131,7 +91,7 @@ class CameraStoreProductsSeeder extends Seeder
                 'base_price'     => 1950,
                 'unit_label_ar'  => 'باقة',
                 'unit_label_en'  => 'package',
-                'sort_order'     => 7,
+                'sort_order'     => 3,
             ],
             [
                 'name_ar'        => 'باقة 6 كاميرا 5MP + DVR (شاملة التركيب)',
@@ -141,12 +101,52 @@ class CameraStoreProductsSeeder extends Seeder
                 'base_price'     => 2250,
                 'unit_label_ar'  => 'باقة',
                 'unit_label_en'  => 'package',
+                'sort_order'     => 4,
+            ],
+            [
+                'name_ar'        => 'باقة 2 كاميرا 8MP + DVR',
+                'name_en'        => '2-Camera 8MP Bundle + DVR',
+                'description_ar' => 'رؤية ليلية 60م، كاميرات خارجية عالية الدقة، جهاز تسجيل مشمول. السعر الأصلي 1,150 ريال.',
+                'description_en' => '60m night vision, outdoor HD cameras, DVR included. Original price 1,150 SAR.',
+                'base_price'     => 999,
+                'unit_label_ar'  => 'باقة',
+                'unit_label_en'  => 'package',
+                'sort_order'     => 5,
+            ],
+            [
+                'name_ar'        => 'باقة 4 كاميرا 8MP + DVR',
+                'name_en'        => '4-Camera 8MP Bundle + DVR',
+                'description_ar' => 'كاميرات داخلية وخارجية عالية الدقة 8 ميجابكسل مع DVR. السعر الأصلي 1,680 ريال.',
+                'description_en' => 'Indoor/outdoor 8MP cameras with DVR. Original price 1,680 SAR.',
+                'base_price'     => 1300,
+                'unit_label_ar'  => 'باقة',
+                'unit_label_en'  => 'package',
+                'sort_order'     => 6,
+            ],
+            [
+                'name_ar'        => 'باقة 6 كاميرا 8MP + DVR',
+                'name_en'        => '6-Camera 8MP Bundle + DVR',
+                'description_ar' => 'DVR 8 قنوات، 6 كاميرات 8 ميجابكسل. السعر الأصلي 1,990 ريال.',
+                'description_en' => '8-Channel DVR, 6 cameras at 8MP. Original price 1,990 SAR.',
+                'base_price'     => 1799,
+                'unit_label_ar'  => 'باقة',
+                'unit_label_en'  => 'package',
+                'sort_order'     => 7,
+            ],
+            [
+                'name_ar'        => 'باقة 8 كاميرا 8MP + DVR',
+                'name_en'        => '8-Camera 8MP Bundle + DVR',
+                'description_ar' => 'DVR 8 قنوات، 8 كاميرات 8 ميجابكسل. السعر الأصلي 2,250 ريال.',
+                'description_en' => '8-Channel DVR, 8 cameras at 8MP. Original price 2,250 SAR.',
+                'base_price'     => 1899,
+                'unit_label_ar'  => 'باقة',
+                'unit_label_en'  => 'package',
                 'sort_order'     => 8,
             ],
         ];
 
         foreach ($cameraPackages as $data) {
-            ServiceOption::firstOrCreate(
+            ServiceOption::updateOrCreate(
                 ['name_ar' => $data['name_ar'], 'sub_service_id' => $cameraPkgSub->id],
                 array_merge($data, [
                     'sub_service_id'    => $cameraPkgSub->id,

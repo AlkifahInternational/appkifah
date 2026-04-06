@@ -20,7 +20,7 @@ class GeminiDiagnosisService
     ];
 
     private const GEMINI_ENDPOINT =
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
     /**
      * Analyzes an image via Google Gemini API and maps it to a database service.

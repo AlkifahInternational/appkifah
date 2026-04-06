@@ -92,10 +92,15 @@ class ServiceGrid extends Component
         $option = ServiceOption::find($optionId);
         $newQty = $this->cart[$optionId]['quantity'] + $delta;
 
-        if ($newQty >= ($option->min_quantity ?: 1) && $newQty <= ($option->max_quantity ?: 100)) {
-            $this->cart[$optionId]['quantity'] = $newQty;
-            $this->calculatePrice();
+        if ($newQty < 1) {
+            unset($this->cart[$optionId]);
+        } else {
+            $max = $option->max_quantity ?: 100;
+            if ($newQty <= $max) {
+                $this->cart[$optionId]['quantity'] = $newQty;
+            }
         }
+        $this->calculatePrice();
     }
 
     public function selectService(int $serviceId): void
@@ -229,11 +234,15 @@ class ServiceGrid extends Component
 
     public function decrementQuantity(): void
     {
-        $option = ServiceOption::find($this->selectedOptionId);
-        if ($option && $this->quantity > $option->min_quantity) {
+        if ($this->quantity > 1) {
             $this->quantity--;
-            $this->calculatePrice();
+        } else {
+            if ($this->selectedOptionId) {
+                unset($this->cart[$this->selectedOptionId]);
+                $this->showModal = false;
+            }
         }
+        $this->calculatePrice();
     }
 
     public function updatedUrgency(): void
