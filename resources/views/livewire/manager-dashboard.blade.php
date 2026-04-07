@@ -126,7 +126,7 @@
                             </div>
                             <div class="text-right">
                                 <div class="text-xs font-bold text-violet-400 mb-1">{{ $order->status->label() }}</div>
-                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-[10px] text-white/40 hover:text-white underline">
+                                <a href="{{ route('admin.orders.detail', $order->id) }}" class="text-[10px] text-white/40 hover:text-white underline">
                                     {{ __('View Details') }}
                                 </a>
                             </div>
