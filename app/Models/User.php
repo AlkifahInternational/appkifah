@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasOne(TechnicianProfile::class);
     }
 
+    public function managedServices(): HasMany
+    {
+        return $this->hasMany(Service::class, 'manager_id');
+    }
+
     public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class);

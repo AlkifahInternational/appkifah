@@ -18,55 +18,101 @@ class DatabaseSeeder extends Seeder
     {
         // ── Create Users ──────────────────────────────────────────
 
-        $superAdmin = User::create([
-            'name' => 'Super Admin',
-            'email' => 'admin@alkifah.com',
-            'phone' => '+966500000001',
-            'password' => Hash::make('password'),
-            'role' => UserRole::SUPER_ADMIN,
-            'phone_verified' => true,
-            'email_verified_at' => now(),
-        ]);
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'admin@alkifah.com'],
+            [
+                'name' => 'Super Admin',
+                'phone' => '+966500000001',
+                'password' => Hash::make('password'),
+                'role' => UserRole::SUPER_ADMIN,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
-        $manager = User::create([
-            'name' => 'Ahmed Al-Rashid',
-            'email' => 'manager@alkifah.com',
-            'phone' => '+966500000002',
-            'password' => Hash::make('password'),
-            'role' => UserRole::TECHNICAL_MANAGER,
-            'phone_verified' => true,
-            'email_verified_at' => now(),
-        ]);
+        $manager1 = User::updateOrCreate(
+            ['email' => 'construction_mgr@alkifah.com'],
+            [
+                'name' => 'Ahmed Al-Rashid',
+                'phone' => '+966500000002',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICAL_MANAGER,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
-        $technician1 = User::create([
-            'name' => 'Mohammed Hassan',
-            'email' => 'tech1@alkifah.com',
-            'phone' => '+966500000003',
-            'password' => Hash::make('password'),
-            'role' => UserRole::TECHNICIAN,
-            'phone_verified' => true,
-            'email_verified_at' => now(),
-        ]);
+        $manager2 = User::updateOrCreate(
+            ['email' => 'maintenance_mgr@alkifah.com'],
+            [
+                'name' => 'Faisal Al-Otaibi',
+                'phone' => '+966500000006',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICAL_MANAGER,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
-        $technician2 = User::create([
-            'name' => 'Khalid Omar',
-            'email' => 'tech2@alkifah.com',
-            'phone' => '+966500000004',
-            'password' => Hash::make('password'),
-            'role' => UserRole::TECHNICIAN,
-            'phone_verified' => true,
-            'email_verified_at' => now(),
-        ]);
+        $manager3 = User::updateOrCreate(
+            ['email' => 'security_mgr@alkifah.com'],
+            [
+                'name' => 'Sultan Al-Harbi',
+                'phone' => '+966500000007',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICAL_MANAGER,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
-        $client = User::create([
-            'name' => 'Sara Abdullah',
-            'email' => 'client@alkifah.com',
-            'phone' => '+966500000005',
-            'password' => Hash::make('password'),
-            'role' => UserRole::CLIENT,
-            'phone_verified' => true,
-            'email_verified_at' => now(),
-        ]);
+        $manager4 = User::updateOrCreate(
+            ['email' => 'software_mgr@alkifah.com'],
+            [
+                'name' => 'Ziyad Al-Ghamdi',
+                'phone' => '+966500000008',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICAL_MANAGER,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $technician1 = User::updateOrCreate(
+            ['email' => 'tech1@alkifah.com'],
+            [
+                'name' => 'Mohammed Hassan',
+                'phone' => '+966500000003',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICIAN,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $technician2 = User::updateOrCreate(
+            ['email' => 'tech2@alkifah.com'],
+            [
+                'name' => 'Khalid Omar',
+                'phone' => '+966500000004',
+                'password' => Hash::make('password'),
+                'role' => UserRole::TECHNICIAN,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $client = User::updateOrCreate(
+            ['email' => 'client@alkifah.com'],
+            [
+                'name' => 'Sara Abdullah',
+                'phone' => '+966500000005',
+                'password' => Hash::make('password'),
+                'role' => UserRole::CLIENT,
+                'phone_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
         // ── Create Technician Profiles ──────────────────────
 
@@ -99,49 +145,61 @@ class DatabaseSeeder extends Seeder
 
         // ── Create Services (Level 1) ──────────────────────
 
-        $construction = Service::create([
-            'name_en' => 'Construction & Contracting',
-            'name_ar' => 'البناء والمقاولات',
-            'slug' => 'construction-contracting',
-            'description_en' => 'Professional construction and contracting services for commercial and residential projects.',
-            'description_ar' => 'خدمات البناء والمقاولات الاحترافية للمشاريع التجارية والسكنية.',
-            'icon'           => '🏗️',
-            'color' => '#2B6CB0',
-            'sort_order' => 1,
-        ]);
+        $construction = Service::updateOrCreate(
+            ['slug' => 'construction-contracting'],
+            [
+                'name_en' => 'Construction & Contracting',
+                'name_ar' => 'البناء والمقاولات',
+                'description_en' => 'Professional construction and contracting services for commercial and residential projects.',
+                'description_ar' => 'خدمات البناء والمقاولات الاحترافية للمشاريع التجارية والسكنية.',
+                'icon'           => '🏗️',
+                'color' => '#2B6CB0',
+                'sort_order' => 2,
+                'manager_id' => $manager1->id,
+            ]
+        );
 
-        $maintenance = Service::create([
-            'name_en' => 'Home Maintenance',
-            'name_ar' => 'صيانة المنازل',
-            'slug' => 'home-maintenance',
-            'description_en' => 'Complete home repair and maintenance services at your doorstep.',
-            'description_ar' => 'خدمات إصلاح وصيانة المنازل الشاملة عند باب منزلك.',
-            'icon'           => '🏠',
-            'color' => '#38A169',
-            'sort_order' => 2,
-        ]);
+        $maintenance = Service::updateOrCreate(
+            ['slug' => 'home-maintenance'],
+            [
+                'name_en' => 'Home Maintenance',
+                'name_ar' => 'صيانة المنازل',
+                'description_en' => 'Complete home repair and maintenance services at your doorstep.',
+                'description_ar' => 'خدمات إصلاح وصيانة المنازل الشاملة عند باب منزلك.',
+                'icon'           => '🏠',
+                'color' => '#38A169',
+                'sort_order' => 3,
+                'manager_id' => $manager2->id,
+            ]
+        );
 
-        $security = Service::create([
-            'name_en' => 'Security Systems',
-            'name_ar' => 'أنظمة الأمان',
-            'slug' => 'security-systems',
-            'description_en' => 'Advanced security and surveillance solutions for your property.',
-            'description_ar' => 'حلول أمنية ومراقبة متقدمة لممتلكاتك.',
-            'icon'           => '🛡️',
-            'color' => '#E53E3E',
-            'sort_order' => 3,
-        ]);
+        $security = Service::updateOrCreate(
+            ['slug' => 'security-systems'],
+            [
+                'name_en' => 'Security Systems',
+                'name_ar' => 'أنظمة الأمان',
+                'description_en' => 'Advanced security and surveillance solutions for your property.',
+                'description_ar' => 'حلول أمنية ومراقبة متقدمة لممتلكاتك.',
+                'icon'           => '🛡️',
+                'color' => '#E53E3E',
+                'sort_order' => 1,
+                'manager_id' => $manager3->id,
+            ]
+        );
 
-        $software = Service::create([
-            'name_en' => 'Software Development and Marketing',
-            'name_ar' => 'تطوير البرمجيات والتسويق',
-            'slug' => 'software-dev-marketing',
-            'description_en' => 'Custom software, web development, and digital marketing solutions for your business.',
-            'description_ar' => 'حلول تطوير البرمجيات والمواقع والتسويق الرقمي المخصصة لعملك.',
-            'icon'           => '💻',
-            'color' => '#805AD5',
-            'sort_order' => 4,
-        ]);
+        $software = Service::updateOrCreate(
+            ['slug' => 'software-dev-marketing'],
+            [
+                'name_en' => 'Software Development and Marketing',
+                'name_ar' => 'تطوير البرمجيات والتسويق',
+                'description_en' => 'Custom software, web development, and digital marketing solutions for your business.',
+                'description_ar' => 'حلول تطوير البرمجيات والمواقع والتسويق الرقمي المخصصة لعملك.',
+                'icon'           => '💻',
+                'color' => '#805AD5',
+                'sort_order' => 4,
+                'manager_id' => $manager4->id,
+            ]
+        );
 
         // ── Create Sub-Services (Level 2) ──────────────────────
 

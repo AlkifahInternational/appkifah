@@ -68,9 +68,12 @@ composer install --no-dev --optimize-autoloader
 
 ---
 
-## PHASE 4 — Server: Configure Environment
+## PHASE 4 — Server: Initial Configuration (ONE-TIME ONLY)
 
-### Step 9: Create .env file
+> [!CAUTION]
+> **DO NOT** run Step 9 if you are updating an existing deployment. This will overwrite your production `.env` and result in data loss.
+
+### Step 9: Create .env file (Initial Setup Only)
 ```bash
 cp .env.example .env
 php artisan key:generate
@@ -140,11 +143,33 @@ git commit -m "your message"
 git push origin main
 ```
 
-**Server:**
+### Step 18: Pull updates (Safe Update)
 ```bash
 cd ~/domains/app.alkifahic.com/public_html
+
+# 1. Backup current environment
+cp .env .env.backup.$(date +%F_%H-%M-%S)
+
+# 2. Pull changes from GitHub
 git pull origin main
+
+# 3. CRITICAL: Integrity Check
+# Ensure we haven't reverted to a default/example .env
+if grep -q "DB_PASSWORD=secret" .env; then
+  echo "WARNING: .env appears to have been overwritten by default values!"
+  echo "Restoring from backup..."
+  cp .env.backup.* .env
+else
+  echo "Integrity check passed."
+fi
+```
+
+### Step 19: Refresh & Sync
+```bash
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan optimize
 ```
+
+> [!TIP]
+> If you need to change environment variables, edit the `.env` file directly on the server (`nano .env`) rather than re-running Phase 4.

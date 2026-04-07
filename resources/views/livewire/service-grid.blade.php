@@ -1,157 +1,157 @@
+@section('title', $metaTitle)
+
+@section('meta')
+    <meta name="description" content="{{ app()->getLocale() === 'ar' ? 'احسن موقع خدمات في السعودية: اسرع خدمات صيانة، ارخص خدمات برمجة، واسهل تعاملات مع مرونة كاملة. شركة الكفاح العالمية توفر حلولاً متكاملة لاحتياجاتك.' : $metaDescription }}">
+    <meta name="keywords" content="احسن موقع خدمات, اسرع خدمات صيانة, ارخص خدمات برمجة, اسهل تعاملات, مرونة في التعامل, الكفاح العالمية">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ app()->getLocale() === 'ar' ? 'اكتشف احسن موقع خدمات في المملكة. نقوم بتوفير اسرع خدمات صيانة وارخص خدمات برمجة مع اسهل تعاملات لضمان رضاكم.' : $metaDescription }}">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ app()->getLocale() === 'ar' ? 'شركة الكفاح: اسرع خدمات صيانة، ارخص خدمات برمجة، واسهل تعاملات.' : $metaDescription }}">
+@endsection
+
 <div x-data="{ mobileMenuOpen: false }" class="min-h-dvh gradient-dark text-white/95">
+    {{-- ── National Service Schema (SEO) ────────────────────────── --}}
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Service",
+      "name": "{{ $metaTitle }}",
+      "description": "{{ $metaDescription }}",
+      "url": "https://app.alkifahic.com",
+      "logo": "{{ asset('images/logo.png') }}",
+      "sameAs": [
+        "https://www.facebook.com/alkifahinternational",
+        "https://twitter.com/alkifahic",
+        "https://www.linkedin.com/company/alkifah-international"
+      ],
+      "provider": {
+        "@@type": "LocalBusiness",
+        "name": "Al-Kifah Global",
+        "image": "{{ asset('images/logo.png') }}",
+        "address": {
+          "@@type": "PostalAddress",
+          "addressCountry": "SA",
+          "addressRegion": "Al-Ahsa"
+        }
+      },
+      "areaServed": "Saudi Arabia",
+      "hasOfferCatalog": {
+        "@@type": "OfferCatalog",
+        "name": "Professional Contracting Services",
+        "itemListElement": [
+          {
+            "@@type": "Offer",
+            "itemOffered": {
+              "@@type": "Service",
+              "name": "Construction"
+            }
+          },
+          {
+            "@@type": "Offer",
+            "itemOffered": {
+              "@@type": "Service",
+              "name": "Maintenance"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+
     {{-- ── Top Header Bar ────────────────────────────────────── --}}
     <header class="sticky top-0 z-40 glass-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            {{-- Brand Section --}}
             <div class="flex items-center gap-3">
                 @if($activeServiceId)
                     <button wire:click="goBack"
-                        class="w-10 h-10 rounded-xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95">
-                        <svg class="w-5 h-5 text-slate-600 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-10 h-10 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95">
+                        <svg class="w-5 h-5 text-white/80 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </button>
                 @else
                     <a href="{{ route('home') }}">
-                            <img src="{{ asset('images/logo.png') }}?v={{ @filemtime(public_path('images/logo.png')) ?: time() }}" alt="Al-Kifah"
-                             class="w-12 h-12 rounded-xl object-cover shrink-0 shadow-md shadow-violet-900/40">
+                        <img src="{{ asset('images/logo.png') }}?v={{ @filemtime(public_path('images/logo.png')) ?: time() }}" alt="Al-Kifah"
+                             class="w-12 h-12 rounded-xl object-cover shrink-0 shadow-lg shadow-black/40">
                     </a>
                 @endif
-                <div>
-                    <h1 class="text-lg sm:text-xl font-bold font-[Outfit] tracking-tight {{ $activeServiceId ? 'text-white' : 'text-white/90' }}">
+                <div class="bg-white/5 backdrop-blur-md rounded-2xl p-3 border border-white/10 shadow-xl shadow-black/20 flex flex-col justify-center">
+                    <h1 class="text-xl sm:text-2xl font-bold font-[Outfit] tracking-tighter leading-none {{ $activeServiceId ? 'text-white' : 'text-white/95' }}">
                         @if($activeSubService)
                             {{ app()->getLocale() === 'ar' ? $activeSubService->name_ar : $activeSubService->name_en }}
                         @elseif($activeService)
                             {{ app()->getLocale() === 'ar' ? $activeService->name_ar : $activeService->name_en }}
                         @else
-                            @if(app()->getLocale() === 'ar')
-                                <span class="bg-gradient-to-r from-orange-400 to-violet-400 bg-clip-text text-transparent drop-shadow-sm">شركة الكفاح</span>
-                                <span class="text-white/80 font-light ml-1">العالمية</span>
-                            @else
-                                <span class="bg-gradient-to-r from-orange-400 to-violet-400 bg-clip-text text-transparent drop-shadow-sm">AL-KIFAH</span>
-                                <span class="text-white/80 font-light ml-1">Global</span>
-                            @endif
+                            @brand
                         @endif
                     </h1>
-                    @if(!$activeServiceId)
-                        <p class="text-xs text-white/60 mt-0.5">{{ __('Professional Services at Your Fingertips') }}</p>
+                    <p class="text-xs text-white/60 mt-1">@highlight(__('Professional Services at Your Fingertips'), 'Professional')</p>
+                </div>
+            </div>
+
+            {{-- Navigation Actions --}}
+            <div class="flex items-center gap-3">
+                {{-- Desktop Nav --}}
+                <div class="hidden sm:flex items-center gap-3">
+                    <button onclick="window.KifahTour?.resetAll(); setTimeout(()=>window.KifahTour?.launch('home'),100)"
+                            class="flex items-center gap-1.5 px-4 py-2 bg-white/5 rounded-xl transition-all text-sm font-semibold text-white/80 border border-white/10 hover:bg-white/10">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{ app()->getLocale() === 'ar' ? 'كيف يعمل؟' : 'How it Works' }}
+                    </button>
+
+                    <a href="{{ route('locale.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}"
+                       class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center transition-all text-sm font-bold text-white hover:bg-white/20">
+                        {{ app()->getLocale() === 'ar' ? 'EN' : 'ع' }}
+                    </a>
+
+                    @if(auth()->check())
+                        <div class="relative w-full sm:w-auto" x-data="{ open: false }">
+                             <button @click="open = !open" class="hidden sm:flex w-10 h-10 rounded-xl bg-orange-500/20 items-center justify-center transition-all relative text-orange-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            </button>
+                        </div>
+                        <a href="{{ route('dashboard') }}" class="px-5 py-2 rounded-xl bg-violet-600 text-white text-sm font-bold hover:bg-violet-700 transition-all">
+                            {{ app()->getLocale() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+                        </a>
                     @else
-                        {{-- breadcrumb --}}
-                        @if($activeSubService && $activeService)
-                            <p class="text-xs text-white/50 mt-0.5">{{ app()->getLocale() === 'ar' ? $activeService->name_ar : $activeService->name_en }}</p>
-                        @endif
+                        <a href="{{ route('login') }}" class="px-6 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-violet-500 text-white text-sm font-bold hover:shadow-lg transition-all">
+                            {{ __('Login') }}
+                        </a>
                     @endif
                 </div>
-            </div>
 
-            {{-- Mobile Hamburger --}}
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="sm:hidden w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all shrink-0">
-                <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                <svg x-show="mobileMenuOpen" style="display:none;" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-
-            {{-- Navigation Buttons --}}
-            <div :class="mobileMenuOpen ? 'flex flex-col absolute top-[100%] left-0 w-full p-4 bg-[#47204d] shadow-2xl border-b border-white/10 z-50 gap-4' : 'hidden sm:flex'" class="items-center gap-2">
-
-                {{-- How it Works --}}
-                <button onclick="window.KifahTour?.resetAll(); setTimeout(()=>window.KifahTour?.launch('home'),100)"
-                        data-tooltip="{{ app()->getLocale() === 'ar' ? 'تعرف على كيفية استخدام التطبيق' : 'Learn how to use the app' }}"
-                        class="flex w-full sm:w-auto items-center justify-center gap-1.5 px-4 py-2 bg-white/5 sm:bg-transparent rounded-xl transition-all text-sm sm:text-xs font-semibold {{ $activeServiceId ? 'text-white/80 border sm:border-white/20 hover:bg-white/10' : 'text-violet-300 border border-violet-400/20 hover:bg-violet-500/10' }}"
-                        style="background:none;">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    {{ app()->getLocale() === 'ar' ? 'كيف يعمل؟' : 'How it Works' }}
+                {{-- Mobile Hamburger --}}
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="sm:hidden w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white">
+                    <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenuOpen" style="display:none;" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
-
-                {{-- Language Toggle --}}
-                <a href="{{ route('locale.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}"
-                   data-tooltip="{{ app()->getLocale() === 'ar' ? 'Switch to English' : 'التبديل للعربية' }}"
-                   class="w-full sm:w-10 h-10 rounded-xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all text-sm font-semibold text-violet-600">
-                    {{ app()->getLocale() === 'ar' ? 'EN' : 'ع' }}
-                </a>
-
-                {{-- Search Bar --}}
-                <div class="relative w-full sm:w-auto">
-                    <div class="absolute inset-y-0 {{ app()->getLocale() === 'ar' ? 'right-0 pr-3' : 'left-0 pl-3' }} flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                    <input id="mobileSearchInput" wire:model.live.debounce.300ms="searchQuery" type="text" placeholder="{{ app()->getLocale() === 'ar' ? 'بحث عن خدمة...' : 'Search services...' }}" class="w-full sm:w-48 {{ app()->getLocale() === 'ar' ? 'pr-9 pl-3' : 'pl-9 pr-3' }} py-2 border border-slate-200 rounded-xl leading-5 bg-white/90 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm transition-all duration-300">
-                </div>
-
-                @auth
-                    {{-- Notifications --}}
-                    @php
-                        $unreadCount = auth()->user()->unreadNotifications->count();
-                    @endphp
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="w-10 h-10 rounded-xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all relative">
-                            <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                            </svg>
-                            @if($unreadCount > 0)
-                                <span class="absolute top-1 right-1 flex h-3 w-3">
-                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-orange-500 border-2 border-white"></span>
-                                </span>
-                            @endif
-                        </button>
-                        
-                        {{-- Notifications Dropdown --}}
-                        <div x-show="open" @click.away="open = false" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
-                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                             class="fixed inset-x-4 sm:absolute sm:inset-auto sm:right-0 mt-2 sm:w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden" 
-                             style="display: none;">
-                            <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                                <span class="font-bold text-slate-900">{{ app()->getLocale() === 'ar' ? 'الإشعارات' : 'Notifications' }}</span>
-                                @if($unreadCount > 0)
-                                    <span class="text-xs font-bold bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full">{{ $unreadCount }}</span>
-                                @endif
-                            </div>
-                            <div class="max-h-80 overflow-y-auto p-2">
-                                @forelse(auth()->user()->notifications()->take(10)->get() as $notification)
-                                    <div class="p-3 {{ $notification->read_at ? 'opacity-50' : 'bg-orange-50' }} rounded-xl mb-1 flex gap-3 text-sm transition-all hover:bg-slate-50">
-                                        <div class="w-2 h-2 mt-1.5 rounded-full {{ $notification->read_at ? 'bg-slate-300' : 'bg-orange-500' }} shrink-0"></div>
-                                        <div>
-                                            <p class="text-slate-900 font-bold leading-snug">{{ $notification->data['message'] ?? 'Notification' }}</p>
-                                            <p class="text-[10px] text-slate-500 mt-1.5 font-semibold">{{ $notification->created_at->diffForHumans() }}</p>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <div class="py-12 text-center text-slate-400">
-                                        <div class="text-4xl mb-2 opacity-30">🔔</div>
-                                        <p class="text-sm font-medium">{{ app()->getLocale() === 'ar' ? 'لا توجد إشعارات جديدة' : 'No new notifications' }}</p>
-                                    </div>
-                                @endforelse
-                                @if(auth()->user()->notifications()->count() > 5)
-                                    <a href="{{ route('dashboard') }}" class="block text-center mt-2 text-violet-600 text-xs font-semibold py-1 hover:underline">
-                                        {{ app()->getLocale() === 'ar' ? 'عرض الكل' : 'View all' }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="{{ route('dashboard') }}"
-                       data-tooltip="{{ app()->getLocale() === 'ar' ? 'لوحة تحكمك' : 'Your dashboard' }}"
-                       class="w-full sm:w-10 h-10 rounded-xl bg-white/90 border border-slate-100 hover:bg-orange-50 flex items-center justify-center transition-all text-violet-600 gap-2 font-semibold text-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        <span class="sm:hidden">{{ app()->getLocale() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}"
-                       data-tooltip="{{ app()->getLocale() === 'ar' ? 'سجّل دخولك لإجراء الحجز' : 'Sign in to book a service' }}"
-                       class="w-full sm:w-auto px-4 py-3 sm:py-2 text-center rounded-xl bg-gradient-to-r from-orange-500 to-violet-500 text-sm font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all sm:hover:scale-105 sm:active:scale-95 text-white">
-                        {{ __('Login') }}
-                    </a>
-                @endauth
             </div>
         </div>
+
+        {{-- Mobile Full-Screen Menu --}}
+        <template x-if="mobileMenuOpen">
+            <div class="sm:hidden bg-[#1a0a2e] border-t border-white/10 p-5 space-y-4">
+                <a href="{{ route('home') }}" class="block px-4 py-3 rounded-xl bg-white/5 text-white font-medium">
+                    {{ __('Home') }}
+                </a>
+                @if(auth()->check())
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-xl bg-violet-600 text-white font-bold text-center">
+                        {{ __('Dashboard') }}
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="block px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-violet-500 text-white font-bold text-center">
+                        {{ __('Login') }}
+                    </a>
+                @endif
+                <a href="{{ route('locale.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}" class="block px-4 py-3 rounded-xl bg-white/10 text-white text-center font-bold">
+                    {{ app()->getLocale() === 'ar' ? 'English' : 'العربية' }}
+                </a>
+            </div>
+        </template>
     </header>
 
     {{-- ── Main Content ────────────────────────────────────── --}}
@@ -268,18 +268,37 @@
                     {{ app()->getLocale() === 'ar' ? 'لست متأكداً من المشكلة؟ التقط صورة أو ارفع صورتها، ودع الذكاء الاصطناعي يحللها لك ويقترح الخدمة المناسبة فوراً.' : 'Not sure what the problem is? Take a picture, and let our AI analyze it to suggest the right service instantly.' }}
                 </p>
 
-                <button class="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md border border-white/20 transition-all group-hover:bg-linear-to-r group-hover:from-orange-500 group-hover:to-violet-600 group-hover:border-transparent">
-                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                        <circle cx="12" cy="13" r="4" stroke-width="2"/>
-                    </svg>
-                    {{ app()->getLocale() === 'ar' ? 'صور مشكلتك الآن' : 'Picture Your Problem Now' }}
+                <button @click="$dispatch('openAiModal')"
+                        class="w-full max-w-xs py-4 rounded-2xl bg-linear-to-r from-orange-500 to-violet-600 text-white font-bold text-base shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    {{-- Help Span Badge --}}
+                    <span class="absolute -top-1 -right-1 bg-white text-orange-600 text-[9px] font-black px-2 py-0.5 rounded-bl-lg shadow-sm border border-orange-100 animate-pulse">
+                        {{ app()->getLocale() === 'ar' ? 'تشخيص ذكي' : 'AI SMART' }}
+                    </span>
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            <circle cx="12" cy="13" r="3" stroke-width="2"/>
+                        </svg>
+                        {{ app()->getLocale() === 'ar' ? 'صور مشكلتك الآن' : 'Picture Your Problem Now' }}
+                    </span>
                 </button>
             </div>
 
-            <div id="services-grid" class="mb-8 scroll-mt-24">
-                <h2 class="text-2xl sm:text-3xl font-bold font-[Outfit] mb-2">{{ __('Our Services') }}</h2>
-                <p class="text-white/70">{{ __('Choose a service category to get started') }}</p>
+            <div id="services-grid" class="text-center mb-16 relative py-6 scroll-mt-24">
+                {{-- Decorative background glow --}}
+                <div class="absolute inset-0 bg-violet-600/5 blur-[120px] rounded-full -z-10"></div>
+                
+                <h2 class="text-4xl sm:text-6xl font-black font-[Outfit] text-white tracking-tight leading-tight mb-5 drop-shadow-2xl">
+                    {{ app()->getLocale() === 'ar' ? 'خدماتنا المميزة' : __('Our Services') }}
+                </h2>
+                
+                <div class="inline-flex items-center gap-3 px-8 py-3 rounded-full bg-orange-500 border border-orange-400 shadow-[0_10px_40px_-10px_rgba(249,115,22,0.5)] hover:scale-105 transition-all cursor-default">
+                    <span class="flex h-2.5 w-2.5 rounded-full bg-white animate-pulse"></span>
+                    <p class="text-base sm:text-lg font-black text-[#120720] uppercase tracking-wider leading-none">
+                        {{ app()->getLocale() === 'ar' ? 'اختر فئة الخدمة للبدء' : 'Select a service category to begin' }}
+                    </p>
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4 sm:gap-6" wire:transition>
@@ -310,6 +329,20 @@
                             @else
                                 {{-- Emoji or any other character --}}
                                 <span class="text-3xl leading-none">{{ $iconVal }}</span>
+                            @endif
+                        </div>
+
+                        {{-- Journey Badge --}}
+                        <div class="flex items-center gap-1 mb-2">
+                            @if($service->slug === 'security-systems-cctv')
+                                <span class="px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/20 text-[9px] uppercase tracking-widest font-black text-white flex items-center gap-1 shadow-lg">
+                                    <svg class="w-3 h-3 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    {{ app()->getLocale() === 'ar' ? 'الأكثر تقييماً' : 'Top Rated' }}
+                                </span>
+                            @else
+                                <span class="px-2 py-0.5 rounded-md bg-black/30 border border-white/20 text-[9px] uppercase tracking-widest font-black text-white">
+                                    {{ app()->getLocale() === 'ar' ? 'الخطوة 1' : 'Step 1' }}
+                                </span>
                             @endif
                         </div>
 
@@ -357,7 +390,12 @@
             <div x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="slide-enter scroll-mt-24" id="items-grid">
 
                 {{-- Header --}}
-                <div class="mb-4">
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange-500/20 text-xs font-bold text-orange-400 border border-orange-500/30">2</span>
+                        <h2 class="text-lg font-bold text-white">{{ app()->getLocale() === 'ar' ? 'الخطوة 2: حدد خياراتك' : 'Step 2: Customize Your Selection' }}</h2>
+                    </div>
+                    
                     @if(count($cart) > 0)
                         <p class="text-sm font-semibold text-violet-200">
                             ✓ {{ count($cart) }} {{ app()->getLocale() === 'ar' ? 'منتج مختار' : 'selected' }}
@@ -531,7 +569,7 @@
                             <p class="text-xs text-white/50 mt-1 flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
                                 @if(isset($selectedOption) && count($cart) <= 1)
-                                    {{ app()->getLocale() === 'ar' ? $selectedOption->subService->name_ar : $selectedOption->subService->name_en }}
+                                    {{ app()->getLocale() === 'ar' ? ($selectedOption->subService?->name_ar ?? '...') : ($selectedOption->subService?->name_en ?? '...') }}
                                 @else
                                     {{ app()->getLocale() === 'ar' ? 'مراجعة الطلب قبل التأكيد' : 'Review your order before confirm' }}
                                 @endif
@@ -602,7 +640,10 @@
                                         <div class="text-[10px] text-violet-400 font-bold font-[Outfit] min-w-[60px] text-end">
                                             @php 
                                                $opt = \App\Models\ServiceOption::find($id);
-                                               $itemPrice = ($urgency === 'urgent' && $opt) ? $opt->base_price * $opt->urgent_multiplier : ($opt->base_price ?? 0);
+                                               $itemPrice = 0;
+                                               if ($opt) {
+                                                   $itemPrice = ($urgency === 'urgent') ? $opt->base_price * $opt->urgent_multiplier : $opt->base_price;
+                                               }
                                             @endphp
                                             {{ number_format($itemPrice * $item['quantity'], 0) }} SAR
                                         </div>
@@ -649,8 +690,18 @@
                     @endif
 
                     {{-- Urgency Toggle --}}
-                    <div>
-                        <label class="text-sm font-bold text-white/90 block mb-4">{{ __('When do you need it?') }}</label>
+                    <div x-data="{ showUrgencyHelp: false }">
+                        <div class="flex items-center gap-2 mb-4">
+                            <label class="text-sm font-bold text-white/90 block">{{ __('When do you need it?') }}</label>
+                            <button @mouseenter="showUrgencyHelp = true" @mouseleave="showUrgencyHelp = false" class="text-white/30 hover:text-orange-400 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </button>
+                            <div x-show="showUrgencyHelp" x-transition class="absolute bottom-full left-0 mb-2 w-64 p-3 bg-violet-900 border border-white/20 rounded-xl shadow-2xl z-50 text-[10px] text-white/80 leading-relaxed backdrop-blur-md">
+                                {{ app()->getLocale() === 'ar' 
+                                    ? 'العاجل: يتم إرسال فني إليك فوراً (رسوم إضافية قد تطبق). المجدول: يمنحك المرونة في اختيار الموعد.' 
+                                    : 'Urgent: Triggers immediate technician dispatch (extra fees may apply). Scheduled: Gives you flexibility to choose your time.' }}
+                            </div>
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
                             <button wire:click="$set('urgency', 'scheduled')"
                                 class="group p-4 rounded-[1.5rem] border-2 transition-all duration-300 text-center relative overflow-hidden {{ $urgency === 'scheduled' ? 'border-violet-500 bg-violet-500/20' : 'border-white/5 bg-white/5 hover:border-white/10' }}">
@@ -703,6 +754,7 @@
             </div>
         </div>
         </template>
+        @endif
 
         {{-- ── 🛒 CHECKOUT MODAL (Modal 1) ───────────────────────── --}}
         @if($showCheckoutModal)
@@ -793,6 +845,7 @@
         <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-[#0a0514]/80 backdrop-blur-sm" wire:click="$set('showPaymentModal', false)"></div>
             <div class="relative w-full max-w-md bg-[#120720] border border-violet-500/30 rounded-[2rem] p-6 shadow-2xl slide-enter z-10 max-h-[90vh] overflow-y-auto">
+                {{-- Modal content remains same... --}}
                 <button wire:click="$set('showPaymentModal', false); $set('showCheckoutModal', true)" class="absolute top-4 rtl:left-4 ltr:right-4 text-white/40 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
@@ -840,6 +893,21 @@
                         </span>
                     </label>
                 </div>
+                
+                {{-- Secure Checkout Badge --}}
+                <div class="mb-6 flex items-center justify-center gap-4 py-3 bg-white/5 rounded-2xl border border-white/10">
+                    <div class="flex flex-col items-center gap-1">
+                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <span class="text-[8px] font-bold text-white/50 uppercase tracking-widest">{{ app()->getLocale() === 'ar' ? 'دفع آمن' : 'SECURE' }}</span>
+                    </div>
+                    <div class="w-px h-8 bg-white/10"></div>
+                    <div class="text-[10px] text-white/60 leading-tight">
+                        <p class="font-bold text-white/80 uppercase">{{ app()->getLocale() === 'ar' ? 'تشفير 256 بت' : '256-bit SSL Encryption' }}</p>
+                        <p>{{ app()->getLocale() === 'ar' ? 'بياناتك محمية بالكامل' : 'All your data is fully protected' }}</p>
+                    </div>
+                </div>
 
                 <div wire:loading wire:target="processPaymentAndBook" class="text-center py-4 w-full text-violet-400 animate-pulse text-sm font-bold">
                     {{ app()->getLocale() === 'ar' ? 'جاري معالجة الدفع...' : 'Processing Payment...' }}
@@ -857,23 +925,73 @@
         </div>
         </template>
         @endif
-                </div>
-            </div>
-        </div>
-    @endif
 
-    {{-- ── About Us Section ─────────────────────────────── --}}
+    {{-- ── SEO Article Section ────────────────────────────────────── --}}
+    @if(!$activeServiceId)
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12 mt-8">
+            <article class="bg-[#1a0a2e]/60 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl shadow-black/50 relative overflow-hidden">
+                <div class="absolute inset-0 bg-linear-to-br from-violet-500/5 to-transparent pointer-events-none"></div>
+                <div class="relative z-10 prose prose-invert max-w-none">
+                    <h2 class="text-2xl sm:text-4xl font-black font-[Outfit] text-white tracking-tight leading-tight mb-8 drop-shadow-2xl text-center">
+                        {{ app()->getLocale() === 'ar' ? 'لماذا تعتبر الكفاح العالمية احسن موقع خدمات وأنظمة مراقبة في السعودية؟' : 'Why Al-Kifah is the Top Service & Security Provider?' }}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-white/70 leading-relaxed">
+                        <div class="group">
+                            <h3 class="text-white font-bold text-lg mb-3 flex items-center gap-2 group-hover:text-orange-400 transition-colors">
+                                <span class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></span>
+                                {{ app()->getLocale() === 'ar' ? 'أنظمة الكاميرات والمراقبة: الأكثر طلباً وتقييماً' : 'CCTV & Security: Our Top-Rated Service' }}
+                            </h3>
+                            <p class="text-sm">
+                                {{ app()->getLocale() === 'ar' ? 'بناءً على التقييمات الممتازة في جوجل لمتجرنا الكتروني (alkifahstore.com)، نفخر بتقديم أجود أنواع كاميرات المراقبة والأنظمة الأمنية التي تضمن حماية متكاملة لمنزلك أو منشأتك بأسعار منافسة.' : 'Based on 5-star Google reviews from alkifahstore.com, we pride ourselves on providing the highest quality CCTV cameras and security systems ensuring complete protection.' }}
+                            </p>
+                        </div>
+
+                        <div class="group">
+                            <h3 class="text-white font-bold text-lg mb-3 flex items-center gap-2 group-hover:text-violet-400 transition-colors">
+                                <span class="w-2.5 h-2.5 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]"></span>
+                                {{ app()->getLocale() === 'ar' ? 'اسرع خدمات صيانة متكاملة' : 'Fastest Integrated Maintenance' }}
+                            </h3>
+                            <p class="text-sm">
+                                {{ app()->getLocale() === 'ar' ? 'نوفر اسرع خدمات صيانة للمنازل والشركات عبر فريق فني مختص يصلك في وقت قياسي لضمان استمرارية أعمالك وراحة منزلك، مع مرونة تامة في المواعيد.' : 'We provide the fastest maintenance services for homes and businesses via specialized teams that reach you in record time, ensuring continuity and comfort.' }}
+                            </p>
+                        </div>
+
+                        <div class="group">
+                            <h3 class="text-white font-bold text-lg mb-3 flex items-center gap-2 group-hover:text-green-400 transition-colors">
+                                <span class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                                {{ app()->getLocale() === 'ar' ? 'ارخص خدمات برمجة وتطوير' : 'Affordable Software Development' }}
+                            </h3>
+                            <p class="text-sm">
+                                {{ app()->getLocale() === 'ar' ? 'نقدم ارخص خدمات برمجة وتطوير تطبيقات المواقع في المملكة مع الالتزام بمعايير الجودة العالمية، مما يسهل على الشركات الناشئة الانطلاق في الفضاء الرقمي.' : 'We offer affordable programming and web development services in the Kingdom with international quality standards, facilitating digital growth for startups.' }}
+                            </p>
+                        </div>
+
+                        <div class="group">
+                            <h3 class="text-white font-bold text-lg mb-3 flex items-center gap-2 group-hover:text-blue-400 transition-colors">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                                {{ app()->getLocale() === 'ar' ? 'اسهل تعاملات ومرونة كاملة' : 'Easiest Transactions & Flexibility' }}
+                            </h3>
+                            <p class="text-sm">
+                                {{ app()->getLocale() === 'ar' ? 'نتميز بتقديم اسهل تعاملات رقمية تبدأ من الحجز الفوري وحتى التنفيذ، مع مرونة في التعامل تتيح لك تخصيص طلبك حسب احتياجاتك الخاصة وميزانيتك.' : 'We offer the easiest digital transactions from instant booking to execution, with total flexibility to customize requests based on your needs.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </section>
+    @endif
     @if(!$activeServiceId)
     <section id="about-us" class="max-w-7xl mx-auto px-4 sm:px-6 py-16 pb-8">
 
         {{-- Section Header --}}
         <div class="text-center mb-12 bg-[#1a0a2e]/60 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 sm:p-12 shadow-2xl max-w-4xl mx-auto ring-1 ring-white/5 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-br from-violet-500/10 to-transparent"></div>
             <div class="relative z-10">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20 text-xs font-bold tracking-widest uppercase mb-4">
-                    {{ app()->getLocale() === 'ar' ? 'من نحن' : 'About Us' }}
+                <span class="inline-block px-4 py-1.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20 text-xs font-bold tracking-widest uppercase mb-6">
+                    {{ app()->getLocale() === 'ar' ? 'عن الشركة' : 'About Our Company' }}
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-black font-[Outfit] text-white mb-5 drop-shadow-md">
+                <h2 class="text-4xl sm:text-6xl font-black font-[Outfit] text-white tracking-tight leading-tight mb-6 drop-shadow-2xl">
                     {{ app()->getLocale() === 'ar' ? 'شركة الكفاح العالمية' : 'Al Kifah International Company' }}
                 </h2>
                 <p class="text-white/80 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed mix-blend-plus-lighter">
@@ -1084,7 +1202,7 @@
             </button>
 
             @auth
-                @php $role = auth()->user()->role->value; @endphp
+                @php $role = auth()->user()?->role?->value ?? 'client'; @endphp
 
                 @if(in_array($role, ['super_admin', 'technical_manager']))
                     {{-- Admin / Manager: go to their dashboard --}}
@@ -1169,6 +1287,7 @@
 
         </div>
     </nav>
+
 
     {{-- ── Smart Visual Diagnosis Component ────────────────────────── --}}
     <livewire:visual-diagnosis />

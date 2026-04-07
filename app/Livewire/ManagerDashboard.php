@@ -90,8 +90,33 @@ class ManagerDashboard extends Component
 
     public function render()
     {
-        $pendingOrders = Order::pending()->with(['client', 'items.serviceOption'])->latest()->get();
-        $activeOrders = Order::active()->with(['client', 'technician'])->latest()->get();
+        $user = Auth::user();
+
+        // ── Determine Service Scope ──────────────────────
+        // If technical manager, only get services they are assigned to.
+        // If super admin, get all services.
+        $managedServiceIds = \App\Models\Service::query()
+            ->when($user->role === UserRole::TECHNICAL_MANAGER, function ($query) use ($user) {
+                $query->where('manager_id', $user->id);
+            })
+            ->pluck('id');
+
+        $pendingOrders = Order::pending()
+            ->whereHas('items.serviceOption.subService', function ($query) use ($managedServiceIds) {
+                $query->whereIn('service_id', $managedServiceIds);
+            })
+            ->with(['client', 'items.serviceOption'])
+            ->latest()
+            ->get();
+
+        $activeOrders = Order::active()
+            ->whereHas('items.serviceOption.subService', function ($query) use ($managedServiceIds) {
+                $query->whereIn('service_id', $managedServiceIds);
+            })
+            ->with(['client', 'technician'])
+            ->latest()
+            ->get();
+
         $availableTechnicians = User::where('role', UserRole::TECHNICIAN)
             ->whereHas('technicianProfile', fn($q) => $q->where('is_available', true)->where('is_verified', true))
             ->with(['technicianProfile', 'wallet'])
@@ -101,6 +126,7 @@ class ManagerDashboard extends Component
             'pendingOrders' => $pendingOrders,
             'activeOrders' => $activeOrders,
             'availableTechnicians' => $availableTechnicians,
+            'isScoped' => $user->role === UserRole::TECHNICAL_MANAGER,
         ]);
     }
 }

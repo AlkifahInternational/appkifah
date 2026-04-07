@@ -41,6 +41,7 @@ class AdminDashboard extends Component
         $activeOrders     = Order::active()->count();
         $pendingOrders    = Order::pending()->whereNull('technician_id')->count();
         $totalTechnicians = User::where('role', UserRole::TECHNICIAN)->count();
+        $totalManagers    = User::where('role', UserRole::TECHNICAL_MANAGER)->count();
         $totalClients     = User::where('role', UserRole::CLIENT)->count();
         $recentOrders     = Order::with(['client', 'technician'])->latest()->take(10)->get();
         $recentLogs       = AuditLog::with('user')->latest()->take(10)->get();
@@ -51,6 +52,7 @@ class AdminDashboard extends Component
             'activeOrders'      => $activeOrders,
             'pendingOrders'     => $pendingOrders,
             'totalTechnicians'  => $totalTechnicians,
+            'totalManagers'     => $totalManagers,
             'totalClients'      => $totalClients,
             'recentOrders'      => $recentOrders,
             'recentLogs'        => $recentLogs,

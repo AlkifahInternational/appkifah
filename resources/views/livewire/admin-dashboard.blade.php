@@ -48,9 +48,11 @@
                     </div>
                 </div>
                 <div class="text-2xl font-bold font-[Outfit] text-purple-400 counter-spin">
-                    {{ $totalTechnicians + $totalClients }}
+                    {{ $totalTechnicians + $totalClients + $totalManagers }}
                 </div>
-                <div class="text-xs text-white/70 mt-1">{{ $totalTechnicians }} {{ __('technicians') }} · {{ $totalClients }} {{ __('clients') }}</div>
+                <div class="text-[10px] text-white/50 mt-1 uppercase tracking-tight font-bold">
+                    {{ $totalManagers }} {{ __('managers') }} · {{ $totalTechnicians }} {{ __('techs') }} · {{ $totalClients }} {{ __('clients') }}
+                </div>
             </div>
         </div>
 
@@ -70,7 +72,11 @@
         {{-- ── Quick Actions ─────────────────────────── --}}
         <div class="glass rounded-2xl p-5 mb-8 fade-in" style="animation-delay: 350ms">
             <h3 class="text-sm font-semibold text-white/80 mb-4">{{ __('Quick Actions') }}</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <a href="{{ route('admin.managers') }}" class="flex items-center gap-2 p-3 rounded-xl bg-blue-600/20 text-blue-300 hover:bg-blue-600/30 transition-all text-sm border border-blue-500/20 font-bold group shadow-lg shadow-blue-900/10 active:scale-95">
+                    <svg class="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    {{ __('Manage Managers') }}
+                </a>
                 <a href="{{ route('admin.settings') }}" class="flex items-center gap-2 p-3 rounded-xl bg-violet-500/10 text-violet-700 hover:bg-orange-500/10 transition-all text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                     {{ __('Terms & Policies') }}

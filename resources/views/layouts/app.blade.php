@@ -7,16 +7,28 @@
     <meta name="theme-color" content="#0A1628">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Al-Kifah Global Services - Professional construction, maintenance, security, and software solutions.">
+    
+    {{-- Dynamic SEO Layout --}}
+    <title>@yield('title', 'Al-Kifah Global | الكفاح العالمية')</title>
+    @yield('meta')
+
+    <!-- Open Graph / Social Media (Static Defaults) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+
     @auth
-        @if(auth()->user()->role->value === 'technician')
+        @if(auth()->user()?->role?->value === 'technician')
             <meta name="technician-id" content="{{ auth()->id() }}">
-        @elseif(auth()->user()->role->value === 'client')
+        @elseif(auth()->user()?->role?->value === 'client')
             <meta name="client-id" content="{{ auth()->id() }}">
         @endif
     @endauth
-
-    <title>{{ $title ?? 'Al-Kifah Global' }}</title>
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">

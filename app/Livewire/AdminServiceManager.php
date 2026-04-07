@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Service;
 use App\Models\SubService;
 use App\Models\ServiceOption;
+use App\Models\User;
+use App\Enums\UserRole;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
@@ -12,6 +14,11 @@ use Livewire\Attributes\Layout;
 class AdminServiceManager extends Component
 {
     public $services;
+    public $managers;
+
+    // ── Edit Manager Assignment ─────────────────────────
+    public $editingServiceManagerId = null; // Service ID being edited
+    public $serviceManagerSelect = null;    // Selected User ID
 
     // ── Edit Pricing ────────────────────────────────────
     public $editingOptionId = null;
@@ -53,8 +60,28 @@ class AdminServiceManager extends Component
 
     public function loadServices()
     {
-        $this->services = Service::with(['subServices.serviceOptions' => fn($q) => $q->orderBy('sort_order')])
+        $this->services = Service::with(['manager', 'subServices.serviceOptions' => fn($q) => $q->orderBy('sort_order')])
             ->orderBy('sort_order')->get();
+        $this->managers = User::where('role', UserRole::TECHNICAL_MANAGER)->get();
+    }
+
+    // ── Manager Assignment ───────────────────────────────────────────────────
+
+    public function editServiceManager($serviceId)
+    {
+        $service = Service::findOrFail($serviceId);
+        $this->editingServiceManagerId = $serviceId;
+        $this->serviceManagerSelect = $service->manager_id;
+    }
+
+    public function saveServiceManager()
+    {
+        Service::findOrFail($this->editingServiceManagerId)->update([
+            'manager_id' => $this->serviceManagerSelect ?: null,
+        ]);
+        $this->editingServiceManagerId = null;
+        $this->loadServices();
+        session()->flash('message', __('Manager assigned successfully.'));
     }
 
     // ── Edit Pricing ─────────────────────────────────────────────────────────

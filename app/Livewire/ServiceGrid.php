@@ -776,13 +776,47 @@ class ServiceGrid extends Component
                 ->get();
         }
 
+        $activeService = $this->activeServiceId
+            ? Service::find($this->activeServiceId)
+            : null;
+
         $selectedOption = $this->selectedOptionId
             ? ServiceOption::with('subService.service')->find($this->selectedOptionId)
             : null;
 
-        $activeService = $this->activeServiceId
-            ? Service::find($this->activeServiceId)
-            : null;
+        // Custom SVG icons for premium categories
+        $svgIcons = [
+            'construction' => '<path d="M3 21h18M3 10h18M5 10V7a3 3 0 013-3h8a3 3 0 013 3v3M9 21V10M15 21V10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+            'camera'       => '<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+            'maint'        => '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+            'it'           => '<path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+            'security'     => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+            'clean'        => '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+        ];
+
+        // ── Dynamic SEO Metadata ─────────────────────────────────────
+        $lang = app()->getLocale();
+        $isAr = $lang === 'ar';
+        
+        if ($activeSubService) {
+            $name = $isAr ? $activeSubService->name_ar : $activeSubService->name_en;
+            $parentName = $isAr ? $activeService->name_ar : $activeService->name_en;
+            $metaTitle = $name . ' | ' . $parentName . ' | ' . ($isAr ? 'الكفاح العالمية' : 'Al-Kifah Global');
+            $metaDescription = $isAr 
+                ? "احصل على أفضل خدمات {$name} في المملكة العربية السعودية. جودة احترافية وسرعة في التنفيذ."
+                : "Best {$name} services in KSA. Professional quality and rapid execution by Al-Kifah Global.";
+        } elseif ($activeService) {
+            $name = $isAr ? $activeService->name_ar : $activeService->name_en;
+            $metaTitle = $name . ' | ' . ($isAr ? 'الكفاح العالمية للمقاولات والصيانة' : 'Al-Kifah Global Contracting & Maintenance');
+            $metaDescription = $isAr 
+                ? "خدمات {$name} الشاملة في كافة أنحاء المملكة. حلول مبتكرة وفريق عمل خبير."
+                : "Comprehensive {$name} services across KSA. Innovative solutions and expert team.";
+        } else {
+            $metaTitle = $isAr ? 'الكفاح العالمية | المقاولات، الصيانة، وأنظمة الأمان' : 'Al-Kifah Global | Construction, Maintenance, & Security';
+            $metaDescription = $isAr 
+                ? 'وجهتك الأولى للمقاولات العامة، الصيانة المنزلية، والأنظمة الأمنية الحديثة في السعودية.'
+                : 'Your premier destination for construction, home maintenance, and modern security systems in Saudi Arabia.';
+        }
 
         return view('livewire.service-grid', [
             'services'              => $services,
@@ -797,6 +831,9 @@ class ServiceGrid extends Component
             'subServiceOptionCounts'=> $subServiceOptionCounts,
             'directMode'            => $this->directMode,
             'directGroupedOptions'  => $directGroupedOptions,
+            'svgIcons'              => $svgIcons,
+            'metaTitle'             => $metaTitle,
+            'metaDescription'       => $metaDescription,
         ]);
     }
 }
