@@ -47,14 +47,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/managers', \App\Livewire\AdminUserManager::class)->name('admin.managers');
         Route::get('/admin/settings', \App\Livewire\AdminSettingsManager::class)->name('admin.settings');
         Route::get('/admin/agents', \App\Livewire\AdminAgentManager::class)->name('admin.agents');
-        Route::get('/admin/orders', \App\Livewire\AdminLiveOrders::class)->name('admin.orders.live');
-        Route::get('/admin/orders/{id}', \App\Livewire\AdminOrderDetail::class)->name('admin.orders.detail');
         Route::get('/admin/payments', \App\Livewire\AdminPaymentSettings::class)->name('admin.payments');
     });
 
-    // Technical Manager (also accessible by Super Admin)
-    Route::middleware('technical_manager')->group(function () {
+    // Shared Dispatch & Live Order Access
+    Route::middleware(\App\Http\Middleware\EnsureTechnicalManager::class)->group(function () {
         Route::get('/manager', ManagerDashboard::class)->name('manager.dashboard');
+        Route::get('/admin/orders', \App\Livewire\AdminLiveOrders::class)->name('admin.orders.live');
+        Route::get('/admin/orders/{id}', \App\Livewire\AdminOrderDetail::class)->name('admin.orders.detail');
     });
 
     // Technician

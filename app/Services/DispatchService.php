@@ -42,7 +42,9 @@ class DispatchService
         }
 
         if ($profile) {
-            // Assign order to this technician
+            /* 
+            // DISABLING AUTO-ASSIGNMENT FOR PRODUCTION
+            // The order should remain PENDING until manually assigned or accepted.
             $order->update([
                 'technician_id' => $profile->user_id,
                 'status'        => OrderStatus::ASSIGNED,
@@ -50,6 +52,7 @@ class DispatchService
 
             // Increment total_jobs counter
             $profile->increment('total_jobs');
+            */
         }
 
         return $profile;

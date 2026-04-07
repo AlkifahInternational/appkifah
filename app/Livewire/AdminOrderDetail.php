@@ -18,11 +18,29 @@ class AdminOrderDetail extends Component
 
     public function mount(int $id): void
     {
+        $user = auth()->user();
         $this->order = Order::with([
             'client',
             'technician.technicianProfile',
             'items.serviceOption.subService.service',
         ])->findOrFail($id);
+
+        // Security: Technical Managers can only see orders for their assigned services
+        if ($user->role === \App\Enums\UserRole::TECHNICAL_MANAGER) {
+            $managedServiceIds = $user->managedServices->pluck('id')->toArray();
+            
+            $hasAccess = false;
+            foreach ($this->order->items as $item) {
+                if (in_array($item->serviceOption?->subService?->service_id, $managedServiceIds)) {
+                    $hasAccess = true;
+                    break;
+                }
+            }
+
+            if (!$hasAccess) {
+                abort(403, 'You do not have permission to view this order.');
+            }
+        }
         
         $this->editAddress = $this->order->address ?? '';
         $this->editNotes = $this->order->notes ?? '';
