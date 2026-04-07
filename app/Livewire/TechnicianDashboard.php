@@ -92,6 +92,30 @@ class TechnicianDashboard extends Component
 
     // ── Job Lifecycle ───────────────────────────────────
 
+    public function setEnRoute(int $orderId)
+    {
+        $this->ensureTechnicianRole();
+
+        $order = Order::where('id', $orderId)
+            ->where('technician_id', Auth::id())
+            ->where('status', OrderStatus::ASSIGNED)
+            ->firstOrFail();
+
+        // Calculate initial distance for progress tracking
+        $dist = $order->getDistanceToClient();
+
+        $order->update([
+            'status'              => OrderStatus::EN_ROUTE,
+            'en_route_at'         => now(),
+            'initial_distance_km' => $dist,
+        ]);
+
+        $order->load(['client', 'technician']);
+        \App\Events\OrderStatusChanged::dispatch($order);
+
+        session()->flash('job_message', __('You are now en route to the client!'));
+    }
+
     public function startJob(int $orderId)
     {
         $this->ensureTechnicianRole();

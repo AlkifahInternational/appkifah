@@ -196,21 +196,11 @@
                     </div>
                 </div>
 
-                {{-- Progress Bar for active orders --}}
+                {{-- Advanced Tracking Widget for active orders --}}
                 @if(in_array($statusVal, ['assigned', 'en_route', 'in_progress']))
-                @php
-                    $progress = match($statusVal) {
-                        'assigned'    => 25,
-                        'en_route'    => 55,
-                        'in_progress' => 80,
-                        default       => 0,
-                    };
-                @endphp
-                <div class="h-1 bg-slate-700/50">
-                    <div class="h-1 transition-all duration-1000
-                        {{ $statusVal === 'in_progress' ? 'bg-orange-400' : 'bg-indigo-400' }}"
-                        style="width: {{ $progress }}%"></div>
-                </div>
+                    <div class="px-5 pb-4">
+                        <x-tracking-status :order="$order" class="bg-slate-50 rounded-xl border border-slate-100" />
+                    </div>
                 @endif
             </div>
             @endforeach

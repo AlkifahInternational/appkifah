@@ -83,21 +83,23 @@
                         </h2>
                         
                         {{-- Manager Assignment Display --}}
-                        <div class="flex items-center gap-2 mt-1">
+                        <div class="flex items-center gap-2 mt-1 min-w-0">
                             @if($editingServiceManagerId === $service->id)
-                                <div class="flex items-center gap-2">
-                                    <select wire:model="serviceManagerSelect" class="bg-slate-900 border border-slate-600 rounded-lg px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-orange-500">
+                                <div class="flex items-center flex-wrap gap-2">
+                                    <select wire:model="serviceManagerSelect" class="bg-slate-900 border border-slate-600 rounded-lg px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-orange-500 max-w-[150px] sm:max-w-none">
                                         <option value="">{{ __('No Manager') }}</option>
                                         @foreach($managers as $manager)
                                             <option value="{{ $manager->id }}">{{ $manager->name }} ({{ $manager->email }})</option>
                                         @endforeach
                                     </select>
-                                    <button wire:click="saveServiceManager" class="p-1 rounded bg-green-500/20 text-green-400 hover:bg-green-500/30">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    </button>
-                                    <button wire:click="$set('editingServiceManagerId', null)" class="p-1 rounded bg-slate-700/50 text-white/50 hover:bg-slate-700">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    </button>
+                                    <div class="flex items-center gap-1">
+                                        <button wire:click="saveServiceManager" class="p-1 rounded bg-green-500/20 text-green-400 hover:bg-green-500/30">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        </button>
+                                        <button wire:click="$set('editingServiceManagerId', null)" class="p-1 rounded bg-slate-700/50 text-white/50 hover:bg-slate-700">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
+                                    </div>
                                 </div>
                             @else
                                 <span class="text-[10px] text-white/40 uppercase tracking-tighter">{{ __('Assigned Manager') }}:</span>

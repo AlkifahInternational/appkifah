@@ -64,20 +64,20 @@
 
                 <div class="mt-8">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">{{ __('Assign Service Categories') }}</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         @foreach($allServices as $service)
                             <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800 cursor-pointer hover:border-violet-500/50 transition-all group">
                                 <input type="checkbox" wire:model="selectedServiceIds" value="{{ $service->id }}" 
                                        class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-violet-600 focus:ring-violet-500">
-                                <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
+                                <span class="text-xs sm:text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
                                     {{ app()->getLocale() === 'ar' ? $service->name_ar : $service->name_en }}
                                 </span>
                             </label>
                         @endforeach
                     </div>
                 </div>
-                <div class="flex justify-end gap-3 mt-8">
-                    <button wire:click="saveManager" class="px-8 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold transition-all shadow-lg shadow-violet-900/20 active:scale-95">
+                <div class="flex justify-end mt-8">
+                    <button wire:click="saveManager" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold transition-all shadow-lg shadow-violet-900/20 active:scale-95">
                         {{ __('Create Manager Account') }}
                     </button>
                 </div>

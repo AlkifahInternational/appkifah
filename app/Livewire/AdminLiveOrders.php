@@ -47,28 +47,52 @@ class AdminLiveOrders extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        $isManager = $user->role === \App\Enums\UserRole::TECHNICAL_MANAGER;
+        $managedServiceIds = $isManager ? $user->managedServices->pluck('id')->toArray() : [];
+
         $query = Order::with(['client', 'technician', 'items.serviceOption'])
             ->latest();
 
-        $query = match($this->filter) {
-            'pending'   => $query->where('status', OrderStatus::PENDING),
-            'active'    => $query->whereIn('status', [
+        // Scope by manager's services if not super admin
+        if ($isManager) {
+            $query->whereHas('items.serviceOption.subService', function($q) use ($managedServiceIds) {
+                $q->whereIn('service_id', $managedServiceIds);
+            });
+        }
+
+        $filteredQuery = match($this->filter) {
+            'pending'   => (clone $query)->where('status', OrderStatus::PENDING),
+            'active'    => (clone $query)->whereIn('status', [
                                 OrderStatus::CONFIRMED,
                                 OrderStatus::ASSIGNED,
                                 OrderStatus::EN_ROUTE,
                                 OrderStatus::IN_PROGRESS,
                             ]),
-            'completed' => $query->where('status', OrderStatus::COMPLETED),
-            default     => $query,
+            'completed' => (clone $query)->where('status', OrderStatus::COMPLETED),
+            default     => clone $query,
         };
 
-        $orders = $query->paginate(20);
+        $orders = $filteredQuery->paginate(15);
+
+        // Scope counts
+        $countQuery = Order::query();
+        if ($isManager) {
+            $countQuery->whereHas('items.serviceOption.subService', function($q) use ($managedServiceIds) {
+                $q->whereIn('service_id', $managedServiceIds);
+            });
+        }
 
         $counts = [
-            'pending'   => Order::pending()->whereNull('technician_id')->count(),
-            'active'    => Order::active()->count(),
-            'completed' => Order::where('status', OrderStatus::COMPLETED)->count(),
-            'total'     => Order::count(),
+            'pending'   => (clone $countQuery)->where('status', OrderStatus::PENDING)->whereNull('technician_id')->count(),
+            'active'    => (clone $countQuery)->whereIn('status', [
+                                OrderStatus::CONFIRMED,
+                                OrderStatus::ASSIGNED,
+                                OrderStatus::EN_ROUTE,
+                                OrderStatus::IN_PROGRESS,
+                            ])->count(),
+            'completed' => (clone $countQuery)->where('status', OrderStatus::COMPLETED)->count(),
+            'total'     => (clone $countQuery)->count(),
         ];
 
         return view('livewire.admin-live-orders', compact('orders', 'counts'));

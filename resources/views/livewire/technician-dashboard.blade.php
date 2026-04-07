@@ -150,8 +150,12 @@
 
                     <div class="flex gap-2">
                         @if($job->status === \App\Enums\OrderStatus::ASSIGNED)
+                            <button wire:click="setEnRoute({{ $job->id }})" class="flex-1 py-2.5 rounded-xl bg-orange-500/10 text-orange-600 text-sm font-bold hover:bg-orange-500/20 transition-all">
+                                🚗 {{ app()->getLocale() === 'ar' ? 'أنا في الطريق' : 'En Route' }}
+                            </button>
+                        @elseif($job->status === \App\Enums\OrderStatus::EN_ROUTE)
                             <button wire:click="startJob({{ $job->id }})" class="flex-1 py-2.5 rounded-xl bg-violet-500/10 text-violet-600 text-sm font-bold hover:bg-violet-500/20 transition-all">
-                                🚗 {{ app()->getLocale() === 'ar' ? 'بدء المهمة' : 'Start Job' }}
+                                🔧 {{ app()->getLocale() === 'ar' ? 'بدء العمل' : 'Start Working' }}
                             </button>
                         @elseif($job->status === \App\Enums\OrderStatus::IN_PROGRESS)
                             <button wire:click="completeJob({{ $job->id }})" wire:confirm="{{ app()->getLocale() === 'ar' ? 'هل تريد تعليم هذه المهمة كمكتملة؟' : 'Mark this job as completed?' }}"
