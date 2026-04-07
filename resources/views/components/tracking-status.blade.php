@@ -42,7 +42,7 @@
     {{-- Progress Line --}}
     <div class="relative h-1.5 w-full bg-white/5 rounded-full overflow-visible mb-2">
         {{-- Completed Line --}}
-        <div class="absolute left-0 top-0 h-full bg-linear-to-r from-violet-600 to-orange-500 rounded-full transition-all duration-1000 ease-in-out" 
+        <div class="absolute left-0 top-0 h-full bg-gradient-to-r from-violet-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-1000 ease-in-out shadow-[0_0_12px_rgba(249,115,22,0.4)]" 
              style="width: {{ $progress }}%">
         </div>
 

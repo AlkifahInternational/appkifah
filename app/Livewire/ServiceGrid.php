@@ -569,8 +569,8 @@ class ServiceGrid extends Component
             ]);
         }
 
-        // ── Auto-dispatch to nearest available technician ──
-        \App\Services\DispatchService::dispatch($order);
+        // Orders now remain PENDING until manually assigned by manager or claimed by tech.
+        // Removal of: \App\Services\DispatchService::dispatch($order);
 
         // ── Send Database Notifications to all Admins ──
         try {

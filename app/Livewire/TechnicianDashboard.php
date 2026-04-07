@@ -83,9 +83,19 @@ class TechnicianDashboard extends Component
         // Update profile job counter
         Auth::user()->technicianProfile?->increment('total_jobs');
 
-        // Broadcast change to admin & client
-        $order->load(['client', 'technician']);
-        \App\Events\OrderStatusChanged::dispatch($order);
+        // ── Notify Managers ──
+        try {
+            $managedServiceIds = $order->items->map(fn($i) => $i->serviceOption?->subService?->service_id)->unique()->filter();
+            $managers = \App\Models\User::whereIn('role', [\App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::TECHNICAL_MANAGER])
+                ->where(function($q) use ($managedServiceIds) {
+                    $q->whereHas('managedServices', fn($sub) => $sub->whereIn('id', $managedServiceIds))
+                      ->orWhere('role', \App\Enums\UserRole::SUPER_ADMIN);
+                })->get();
+            
+            \Illuminate\Support\Facades\Notification::send($managers, new \App\Notifications\NewOrderNotification($order));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('[Claim] Failed to notify managers: ' . $e->getMessage());
+        }
 
         session()->flash('job_message', __('Order accepted! Check your active jobs.'));
     }
@@ -110,8 +120,12 @@ class TechnicianDashboard extends Component
             'initial_distance_km' => $dist,
         ]);
 
-        $order->load(['client', 'technician']);
-        \App\Events\OrderStatusChanged::dispatch($order);
+        try {
+            $order->load(['client', 'technician']);
+            \App\Events\OrderStatusChanged::dispatch($order);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed on setEnRoute: ' . $e->getMessage());
+        }
 
         session()->flash('job_message', __('You are now en route to the client!'));
     }
@@ -134,8 +148,12 @@ class TechnicianDashboard extends Component
             'started_at' => now(),
         ]);
 
-        $order->load(['client', 'technician']);
-        \App\Events\OrderStatusChanged::dispatch($order);
+        try {
+            $order->load(['client', 'technician']);
+            \App\Events\OrderStatusChanged::dispatch($order);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed on startJob: ' . $e->getMessage());
+        }
 
         session()->flash('job_message', __('Job started!'));
     }
@@ -169,8 +187,12 @@ class TechnicianDashboard extends Component
         DispatchService::creditWallet($order, $commissionRate);
 
         // Broadcast completion to client + admin
-        $order->load(['client', 'technician']);
-        \App\Events\OrderStatusChanged::dispatch($order);
+        try {
+            $order->load(['client', 'technician']);
+            \App\Events\OrderStatusChanged::dispatch($order);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed on completeJob: ' . $e->getMessage());
+        }
 
         session()->flash('job_message', __('Job completed! Wallet credited.'));
     }

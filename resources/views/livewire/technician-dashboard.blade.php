@@ -193,7 +193,11 @@
 
         {{-- ══════ TAB: QUEUE (Pending unassigned orders) ══════ --}}
         @elseif($tab === 'queue')
-            <p class="text-xs text-white/70 mb-4">{{ app()->getLocale() === 'ar' ? 'لم يتم إسناد هذه الطلبات بعد. سيتم توزيعها تلقائياً.' : 'These orders have not been assigned yet. They will be dispatched automatically.' }}</p>
+            <div class="px-4 py-3 rounded-xl bg-orange-500/10 border border-orange-500/20 mb-4">
+                <p class="text-xs text-orange-200 font-medium">
+                    {{ app()->getLocale() === 'ar' ? 'هذه الطلبات في انتظار فني. يمكنك قبول أي منها للبدء فوراً.' : 'These orders are waiting for a technician. You can claim any of them to start working immediately.' }}
+                </p>
+            </div>
             @forelse($pendingOrders as $order)
                 <div class="glass rounded-2xl p-5 mb-4 border-l-4 {{ $order->urgency?->value === 'urgent' ? 'border-red-500' : 'border-orange-400' }}">
                     {{-- Header --}}

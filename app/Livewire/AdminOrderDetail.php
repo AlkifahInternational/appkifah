@@ -59,8 +59,12 @@ class AdminOrderDetail extends Component
     public function forceDispatch(): void
     {
         \App\Services\DispatchService::dispatch($this->order);
-        $this->order->refresh()->load(['client', 'technician']);
-        \App\Events\OrderStatusChanged::dispatch($this->order);
+        try {
+            $this->order->refresh()->load(['client', 'technician']);
+            \App\Events\OrderStatusChanged::dispatch($this->order);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed on forceDispatch: ' . $e->getMessage());
+        }
     }
 
     public function cancelOrder(): void
